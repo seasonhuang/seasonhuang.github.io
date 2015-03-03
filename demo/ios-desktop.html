@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style type="text/css">
+
+body, ul, ol, h1, h2, h3, h6, p, em, strong, i, sub, sup, img, textarea, input { margin: 0; padding: 0; }
+body{ -webkit-touch-callout: none; -webkit-user-select: none; }
+ul{ list-style: none; }
+.home-page{ margin: 30px 0 47px 0; display: -webkit-box; }
+.home-page ul{ position: relative; width: 254px; height: 328px; padding: 0 33px 0 33px; }
+.home-page ul li{ position: absolute;top: 0; left: 33px; width: 120px; height: 100px; background-color: rgb(26,193,231); background-size: 50px 50px; background-repeat: no-repeat; background-position: 50% 30%; border-radius: 5px; opacity: 0.95; -webkit-backface-visibility: hidden; }
+.home-page.active li{ opacity: 0.6; -webkit-transition: -webkit-transform .3s ease-in-out; }
+.home-page li.select{ opacity: 1; background-color: #5f9ea0; }
+.home-page li.hold{ opacity: 1; -webkit-transition: none; }
+.home-page li:nth-child(1){ -webkit-transform: translate(0    ,0    ) translateZ(0); }
+.home-page li:nth-child(2){ -webkit-transform: translate(134px,0    ) translateZ(0); }
+.home-page li:nth-child(3){ -webkit-transform: translate(0    ,114px) translateZ(0); }
+.home-page li:nth-child(4){ -webkit-transform: translate(134px,114px) translateZ(0); }
+.home-page li:nth-child(5){ -webkit-transform: translate(0    ,228px) translateZ(0); }
+.home-page li:nth-child(6){ -webkit-transform: translate(134px,228px) translateZ(0); }
+
+    </style>
+</head>
+<body>
+    <div id="home">
+        <div id="home-page-scroll">
+        <div id="home-page" class="home-page">
+            <ul>
+                <li><span></span><strong></strong><i></i></li>
+                <li><span></span><strong></strong><i></i></li>
+                <li><span></span><strong></strong><i></i></li>
+                <li><span></span><strong></strong><i></i></li>
+                <li><span></span><strong></strong><i></i></li>
+                <li><span></span><strong></strong><i></i></li>
+            </ul>
+        </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="http://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/lib/zepto.js"></script>
+    <script type="text/javascript">
+
+var pageX, pageY, translateX, translateY;
+var channelManage, channelHolding;
+var checkPosition;
+var $touch;
+var translatePos, offsetPos, startPos;
+
+var touchStart = function(e){
+    e.preventDefault();
+    var touch   = e.changedTouches[0];
+    pageX  = touch.pageX;
+    pageY  = touch.pageY;
+    
+    if(!channelManage){
+        $(e.currentTarget).addClass('select');
+    }
+};
+
+var touchMove = function(e){
+    var touch, deltaX, deltaY, $node;
+    
+    if(!channelHolding){
+        return;
+    }
+    
+    $node  = $touch;
+    touch  = e.changedTouches[0];
+    deltaX = translateX + touch.pageX - pageX;
+    deltaY = translateY + touch.pageY - pageY;
+    $node.css('-webkit-transform','translate('+deltaX+'px, '+deltaY+'px)');
+    
+    clearTimeout(checkPosition);
+    checkPosition = setTimeout(function(){
+        var pageX = touch.pageX;
+        var pageY = touch.pageY;
+        var ofPos = offsetPos;
+        var target;
+        var targetPage;
+        var n = 6;
+        for( var i=0; i<n; i++ ){
+            if( pageX>ofPos[i][0] && pageX<ofPos[i][1] && pageY>ofPos[i][2] && pageY<ofPos[i][3] ){
+                targetPage = $node.siblings();
+                target = targetPage.eq(i);
+                
+                if( target.length ){
+                    $node.insertBefore(target);
+                    self.endPos = i;
+                }
+                else if(targetPage.last().length) {
+                    $node.insertAfter(targetPage.last());
+                    self.endPos = targetPage.length;
+                }
+                else {
+                    self.homePage.children().eq(cPage).append($node);
+                    self.endPos = 0;
+                }
+                
+                break;
+            }
+        }
+    },50);
+    
+}
+
+var touchEnd = function(e){
+    var image, startPos, sub, target, l;
+    var $node = $touch, targetPage, targetNextPage;
+    var n = 6;
+    if(channelHolding){
+        // move item from page which more than 6 items to next page
+        targetPage = $node.siblings();console.log(targetPage.length);
+        while(targetPage.length>=n){
+            targetNextPage = this.homePage.children().eq(cPage+1);
+            if( targetNextPage.children().length )
+                targetPage.last().insertBefore(targetNextPage.children().first());
+            else{
+                targetNextPage.append(targetPage.last());
+            }
+            targetPage = targetNextPage.children();
+        }
+        
+        image = $touch.css('background-image');
+        $touch.removeClass('hold').removeAttr('style').css('background-image',image);
+        clearTimeout(checkPosition);
+        channelHolding = null;
+        $touch     = null;
+        translateX = null;
+        translateY = null;
+        startPage  = null;
+        startPos   = null;
+        changedPage= null;
+    }
+    else {
+        $(e.currentTarget).removeClass('select');
+    }
+    
+    pageX = null;
+    pageY = null;
+}
+
+var hold = function(e){
+    var t; // offsetTop
+    
+    channelHolding = true;
+    checkPosition  = null;
+    
+    $touch = $(e.currentTarget);
+    
+    if(!channelManage){
+        $('#home-page').addClass('active');
+        t = $touch.parent().offset().top;
+        translatePos = [ [0,0], [134,0], [0,114], [134,114], [0,228], [134,228], [0,342], [134,342] ];
+        offsetPos    = [
+            [0  , 160, 0    , t+114],
+            [161, 320, 0    , t+114],
+            [0  , 160, t+114, t+228],
+            [161, 320, t+114, t+228],
+            [0  , 160, t+228, t+342],
+            [161, 320, t+228, t+342],
+            [0  , 160, t+342, 548  ],
+            [161, 320, t+342, 548  ]
+        ];
+        $touch.addClass('hold').removeClass('select');
+        channelManage = true;
+    }
+    else {
+        $touch.addClass('hold');
+    }
+    
+    var pos = $touch.index();
+    translateX = translatePos[pos][0];
+    translateY = translatePos[pos][1];
+    startPos   = $touch.index();
+}
+
+var cancelManage = function(e){
+    var tagName = e.target.tagName;
+    var pages, currPage;
+    if( (tagName=='UL'||tagName=='DIV') && channelManage ){
+        $('#home-page').removeClass('active');                
+        translatePos  = null;
+        offsetTop     = null;
+        offsetLeft    = null;
+        channelManage = null;
+    }
+};
+
+document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+$('#home-page')
+.on('touchstart', 'li', function(e){
+    touchStart(e);
+})
+.on('touchmove' , 'li', function(e){
+    touchMove(e)
+})
+.on('touchend'  , 'li', function(e){
+    touchEnd(e);
+})
+.on('longTap'   , 'li', function(e){
+    hold(e);
+});
+$('body').on('tap', function(e){
+    cancelManage(e);
+});
+
+    </script>
+</body>
+</html>
+    

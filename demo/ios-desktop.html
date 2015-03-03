@@ -214,7 +214,6 @@ var $touch;
 var translatePos, offsetPos, startPos;
 
 var touchStart = function(e){
-    e.preventDefault();
     var touch   = e.changedTouches[0];
     pageX  = touch.pageX;
     pageY  = touch.pageY;
@@ -356,6 +355,7 @@ var cancelManage = function(e){
 document.addEventListener('touchmove', function(e){ e.preventDefault(); });
 $('#home-page')
 .on('touchstart', 'li', function(e){
+    e.preventDefault();
     touchStart(e);
 })
 .on('touchmove' , 'li', function(e){
@@ -374,4 +374,3 @@ $('body').on('tap', function(e){
     </script>
 </body>
 </html>
-    

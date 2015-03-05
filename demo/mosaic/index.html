@@ -22,15 +22,16 @@
 		.control {
 			position: fixed;
 			left: 0;
-			bottom: -160px;
+			bottom: 0;
 			width: 80%;
 			height: 140px;
 			background-color: white;
 			padding: 10px 10%;
 			-webkit-transition: all .3s ease-out;
+			-webkit-transform: translate3d(0,160px,0);
 		}
 		.control.show {
-			bottom: 0;
+			-webkit-transform: translate3d(0,0,0);
 		}
 		.range {
 			margin: 0 auto;

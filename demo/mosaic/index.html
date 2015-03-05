@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum=1.0,user-scalable=0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<title>马赛克</title>
+		
+		<style type="text/css">
+		html,body { 
+			margin: 0; 
+			padding: 0; 
+			width:100%; 
+			height:100%; 
+			overflow: hidden;
+		}
+		canvas {
+			width: 100%;
+			height: 100%;
+		}
+		.control {
+			position: fixed;
+			left: 0;
+			bottom: -160px;
+			width: 80%;
+			height: 140px;
+			background-color: white;
+			padding: 10px 10%;
+			-webkit-transition: all .3s ease-out;
+		}
+		.control.show {
+			bottom: 0;
+		}
+		.range {
+			margin: 0 auto;
+		}
+		.range label {
+			display: inline-block;
+			width: 20%;
+			vertical-align: top;
+			height: 40px;
+			line-height: 40px;
+		}
+		.range input {
+			margin: 0;
+			width: 80%;
+			height: 40px;
+		}
+		.image {
+			text-align: center;
+		}
+		.image .btn {
+			margin-top: 5px;
+			width: 45%;
+			display: inline-block;
+		}
+		button.btn {
+			border: 0;
+			outline: 0;
+			width: 100%;
+			-webkit-appearance: none;
+		}
+		.btn {
+			display: block;
+			background-color: #04be02;
+			color: white;
+			border-radius: 5px;
+			-webkit-border-radius: 5px;
+			height: 38px;
+			line-height: 38px;
+			text-align: center;
+			box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			margin: 0 auto;
+			padding: 0 14px;
+			font-size: 15px;
+		}
+		</style>
+
+		<script type="text/javascript">
+		    //避免上下滚屏
+		    document.addEventListener("touchmove",function(e){ e.preventDefault(); });
+		</script>
+</head>
+<body>
+    <canvas id="main"></canvas>
+    <div class="control">
+    	<div class="range">
+    		<div class="line-width">
+    			<label>宽度</label><input type="range" min="1" max="10">
+    		</div>
+    		<div class="point-width">
+    			<label>粒度</label><input type="range" min="1" max="10">
+    		</div>
+    	</div>
+    	<div class="image">
+    		<label class="btn">选择图片<input type="file" accept="image/*" style="display:none;"></label>
+    		<button class="btn">保存图片</button> 
+    	</div>
+    </div>
+    <script type="text/javascript">
+        
+        var canvas 	= document.querySelector("#main");
+        var ctx 	= canvas.getContext('2d');
+        var width	= canvas.width;
+        var height	= canvas.height;
+        
+        var RAF = (function(){
+        	return 	window.requestAnimationFrame		||
+        			window.webkitRequestAnimationFrame	||
+        			window.mozRequestAnimationFrame		||
+        			window.oRequestAnimationFrame		||
+        			window.msRequestAnimationFrame		||
+        			function( callback ){
+        				var id = window.setTimeout( callback, 1000/60 );
+        				return id;
+        			}
+        })();
+        
+        document.addEventListener('touchstart', function(e){
+        	var ctrl = document.querySelector('.control')
+        	if (ctrl.classList.contains('show')) {
+        		ctrl.classList.remove('show');
+        	} else {
+        		ctrl.classList.add('show');
+        	}
+        });
+
+        document.addEventListener('touchmove', function(){
+
+        });
+        
+        
+        function render(){
+        	ctx.fillStyle = 'rgb(0,0,0)';
+        	ctx.fillRect(0,0,width,height);
+        	
+        }
+        
+        (function(){
+        	RAF( arguments.callee );
+        	render();
+        })();
+
+    </script>
+</body>
+</html>

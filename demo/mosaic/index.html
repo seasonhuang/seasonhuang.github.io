@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum=1.0,user-scalable=0">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="format-detection" content="telephone=no">
 		<title>马赛克</title>
@@ -14,24 +14,35 @@
 			width:100%; 
 			height:100%; 
 			overflow: hidden;
+			background-color: rgba(0,0,0,.9);
 		}
-		canvas {
-			width: 100%;
-			height: 100%;
+
+		body { 
+			display:-webkit-box; 
+			-webkit-box-orient: horizontal; 
+			-webkit-box-pack: center; 
+			-webkit-box-align: center; 
+			text-align:center;
 		}
+
 		.control {
 			position: fixed;
 			left: 0;
 			bottom: 0;
 			width: 80%;
-			height: 140px;
+			height: 280px;
 			background-color: white;
 			padding: 10px 10%;
 			-webkit-transition: all .3s ease-out;
-			-webkit-transform: translate3d(0,160px,0);
+			-webkit-transform: translate3d(0,300px,0);
 		}
 		.control.show {
-			-webkit-transform: translate3d(0,0,0);
+			-webkit-transition-timing-function: cubic-bezier(.54,1.63,0,.87);
+			-webkit-transform: translate3d(0,140px,0);
+		}
+		.control.hide {
+			-webkit-transition-timing-function: ease-out;
+			-webkit-transform: translate3d(0,300px,0);
 		}
 		.range {
 			margin: 0 auto;
@@ -77,6 +88,25 @@
 			padding: 0 14px;
 			font-size: 15px;
 		}
+		.add {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 80px;
+			height: 80px;
+			margin: -40px 0 0 -40px;
+		}
+		.add label {
+			display: block;
+			border: 1px solid rgba(255,255,255,.5);
+			border-radius: 100%;
+			-webkit-border-radius: 100%;
+			font-size: 50px;
+			color: rgba(255,255,255,.5);
+			text-align: center;
+			height: 80px;
+			line-height: 80px;
+		}
 		</style>
 
 		<script type="text/javascript">
@@ -85,7 +115,13 @@
 		</script>
 </head>
 <body>
-    <canvas id="main"></canvas>
+	<div class="main">
+		<canvas id="main" width="0" height="0"></canvas>
+	</div>
+    
+    <div class="add">
+    	<label>+<input id="add-file" type="file" accept="image/*" style="display:none;"></label>
+    </div>
     <div class="control">
     	<div class="range">
     		<div class="line-width">
@@ -106,6 +142,8 @@
         var ctx 	= canvas.getContext('2d');
         var width	= canvas.width;
         var height	= canvas.height;
+
+        var maxWidth = window.innerWidth * .9;
         
         var RAF = (function(){
         	return 	window.requestAnimationFrame		||
@@ -118,8 +156,31 @@
         				return id;
         			}
         })();
+
+        var createObjectURL = window.createObjectURL 
+                           || window.URL && window.URL.createObjectURL 
+                           || window.webkitURL.createObjectURL;
+
+        var revokeObjectURL = window.revokeObjectURL 
+                           || window.URL && window.URL.revokeObjectURL 
+                           || window.webkitURL.revokeObjectURL;
+
+        var dom = {
+        	addFile: document.querySelector('.add')
+        };
+
+
+        function show(dom){
+        	dom.style.display = 'block';
+        }
+
+        function hide(dom){
+        	dom.style.display = 'none';
+        }
+
         
         document.addEventListener('touchstart', function(e){
+        	
         	var ctrl = document.querySelector('.control')
         	if (ctrl.classList.contains('show')) {
         		ctrl.classList.remove('show');
@@ -132,15 +193,45 @@
 
         });
         
+
+        document.getElementById('add-file').addEventListener('change', function(e){
+        	var file = e.target.files[0];
+
+        	var image = new Image();
+        	image.onload = function(){
+        		if (this.width > maxWidth) {
+        			width = canvas.width = maxWidth;
+        			height = canvas.height = width/this.width * this.height;
+        		} else {
+        			width = canvas.width = this.width;
+	        		height = canvas.height = this.height;
+        		}
+	        		
+        		ctx.drawImage(image, 0, 0, width, height);
+        		hide(dom.addFile);
+        		revokeObjectURL(file);
+        	}
+        	image.src = createObjectURL(file);
+        });
+
+        dom.addFile.addEventListener('touchstart', function(e){
+        	e.stopPropagation();
+        });
+
+        canvas.addEventListener('touchstart', function(e){
+        	e.preventDefault();
+        	e.stopPropagation();
+        })
+
         
         function render(){
-        	ctx.fillStyle = 'rgb(0,0,0)';
+        	ctx.fillStyle = 'rgb(200,200,200)';
         	ctx.fillRect(0,0,width,height);
         	
         }
         
         (function(){
-        	RAF( arguments.callee );
+        	//RAF( arguments.callee );
         	render();
         })();
 

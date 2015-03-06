@@ -32,13 +32,13 @@
 			width: 80%;
 			height: 280px;
 			background-color: white;
-			padding: 10px 10%;
+			padding: 0 10%;
 			-webkit-transition: all .3s ease-out;
 			-webkit-transform: translate3d(0,300px,0);
 		}
 		.control.show {
 			-webkit-transition-timing-function: cubic-bezier(.54,1.63,0,.87);
-			-webkit-transform: translate3d(0,140px,0);
+			-webkit-transform: translate3d(0,100px,0);
 		}
 		.control.hide {
 			-webkit-transition-timing-function: ease-out;
@@ -107,6 +107,33 @@
 			height: 80px;
 			line-height: 80px;
 		}
+		.put-up {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 30px;
+			text-align: center;
+		}
+		.put-up span {
+			background-color: rgba(255,255,255,.8);
+			margin-top: 10px;
+		}
+		.put-down {
+			height: 20px;
+			text-align: center;
+			padding-top: 10px;
+		}
+		.put-down span {
+			background-color: rgba(0,0,0,.7);
+		}
+		.put-up span, .put-down span {
+			vertical-align: top;
+			display: inline-block;
+			width: 35px;
+			height: 7px;
+			border-radius: 7px;
+		}
 		</style>
 
 		<script type="text/javascript">
@@ -122,7 +149,9 @@
     <div class="add">
     	<label>+<input id="add-file" type="file" accept="image/*" style="display:none;"></label>
     </div>
+    <div class="put-up"><span></span></div>
     <div class="control">
+    	<div class="put-down"><span></span></div>
     	<div class="range">
     		<div class="line-width">
     			<label>宽度</label><input type="range" min="1" max="10">
@@ -132,7 +161,7 @@
     		</div>
     	</div>
     	<div class="image">
-    		<label class="btn">选择图片<input type="file" accept="image/*" style="display:none;"></label>
+    		<label class="btn">选择图片<input id="change-file" type="file" accept="image/*" style="display:none;"></label>
     		<button class="btn">保存图片</button> 
     	</div>
     </div>
@@ -142,7 +171,10 @@
         var ctx 	= canvas.getContext('2d');
         var width	= canvas.width;
         var height	= canvas.height;
+        var offset  = canvas.getBoundingClientRect();
 
+        var originalWidth  = width;
+        var originalHeight = height;
         var maxWidth = window.innerWidth * .9;
         
         var RAF = (function(){
@@ -166,8 +198,14 @@
                            || window.webkitURL.revokeObjectURL;
 
         var dom = {
-        	addFile: document.querySelector('.add')
+        	add: document.querySelector('.add'),
+        	addFile: document.querySelector('#add-file'),
+        	changeFile: document.querySelector('#change-file'),
+        	putUp: document.querySelector('.put-up'),
+        	putDown: document.querySelector('.put-down'),
+        	ctrl: document.querySelector('.control')
         };
+
 
 
         function show(dom){
@@ -178,23 +216,20 @@
         	dom.style.display = 'none';
         }
 
-        
-        document.addEventListener('touchstart', function(e){
-        	
-        	var ctrl = document.querySelector('.control')
-        	if (ctrl.classList.contains('show')) {
-        		ctrl.classList.remove('show');
-        	} else {
-        		ctrl.classList.add('show');
-        	}
-        });
+        function hidePanic(){
+        	dom.ctrl.classList.remove('show');
+        	show(dom.putUp);
+        }
 
-        document.addEventListener('touchmove', function(){
+        function lineWidthMatrix(level){
+        	var Matrix = [
+        		[0],
+        		[-width-1,-width,-width+1,-1,0,1,width-1,width,width+1]
+        	];
+        	return Matrix[level];
+        }
 
-        });
-        
-
-        document.getElementById('add-file').addEventListener('change', function(e){
+        function onFileChange(e){
         	var file = e.target.files[0];
 
         	var image = new Image();
@@ -208,20 +243,55 @@
         		}
 	        		
         		ctx.drawImage(image, 0, 0, width, height);
-        		hide(dom.addFile);
+        		hide(dom.add);
         		revokeObjectURL(file);
+        		hidePanic();
         	}
         	image.src = createObjectURL(file);
+        }
+        
+        dom.putUp.addEventListener('touchstart', function(e){
+        	e.preventDefault();
+        	dom.ctrl.classList.add('show');
+        	hide(dom.putUp);
         });
 
-        dom.addFile.addEventListener('touchstart', function(e){
-        	e.stopPropagation();
-        });
+        dom.putDown.addEventListener('touchstart', hidePanic);
+        
+
+        dom.addFile.addEventListener('change', onFileChange);
+        dom.changeFile.addEventListener('change', onFileChange);
+
+
+
+        var lastX, lastY, imageData;
+        var lineWidth = 3;
 
         canvas.addEventListener('touchstart', function(e){
         	e.preventDefault();
         	e.stopPropagation();
-        })
+
+        	var touch = e.changedTouches[0];
+        	imageData = ctx.getImageData(0,0,width,height);
+        	offset = canvas.getBoundingClientRect();
+        	lastX  = touch.clientX - offset.left;
+        	lastY  = touch.clientY - offset.top;
+        });
+
+        canvas.addEventListener('touchmove', function(e){
+        	e.preventDefault();
+        	e.stopPropagation();
+
+        	var touch = e.changedTouches[0];
+        	var currX = touch.clientX - offset.left;
+        	var currY = touch.clientY - offset.top;
+
+        	var index = width * 4 * (currY-1) + (currX-1) * 4;
+
+        });
+
+
+
 
         
         function render(){
@@ -232,9 +302,10 @@
         
         (function(){
         	//RAF( arguments.callee );
-        	render();
+        	//render();
         })();
 
     </script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>
 </body>
 </html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title></title>
+    <style type="text/css">
+
+body, ul, ol, h1, h2, h3, h6, p, em, strong, i, sub, sup, img, textarea, input { margin: 0; padding: 0; }
+body{ -webkit-touch-callout: none; -webkit-user-select: none; position: relative; }
+ul{ width: 120px; margin: 100px auto; color: white; line-height: 24px; font-size: 18px; }
+
+.page{ position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; -webkit-transform: scale(0,0); }
+.active{ -webkit-transform: scale(1,1); z-index: 100; }
+#main{ background-color: black; }
+#top{ background-color: red; }
+#right{ background-color: blue; }
+#bottom{ background-color: green; }
+#left{ background-color: orange; } 
+
+.slide{ -webkit-backface-visibility: hidden; -webkit-perspective: 1000; -webkit-transform: preserve-3d; }
+.slide.out , .slide.in    { -webkit-animation-timing-function: ease; z-index: 200; }
+.slide.left, .slide.right { -webkit-animation-duration: 200ms; }
+.slide.up  , .slide.down  { -webkit-animation-duration: 300ms;}
+.slide.out.left  { -webkit-transform: translateX(-100%) translateZ(0); -webkit-animation-name: slideOutToLeft;  }
+.slide.out.right { -webkit-transform: translateX(100%)  translateZ(0);  -webkit-animation-name: slideOutToRight; }
+.slide.out.up    { -webkit-transform: translateY(-100%) translateZ(0); -webkit-animation-name: slideOutToUp;    }
+.slide.out.down  { -webkit-transform: translateY(100%)  translateZ(0);  -webkit-animation-name: slideOutToDown;  }
+.slide.in.left   { -webkit-transform: translateX(0) translateZ(0); -webkit-animation-name: slideInFromLeft;  }
+.slide.in.right  { -webkit-transform: translateX(0) translateZ(0); -webkit-animation-name: slideInFromRight; }
+.slide.in.up     { -webkit-transform: translateY(0) translateZ(0); -webkit-animation-name: slideInFromUp;    }
+.slide.in.down   { -webkit-transform: translateY(0) translateZ(0); -webkit-animation-name: slideInFromDown;  }
+
+
+/* =============
+   keyframe
+   ============= */
+@-webkit-keyframes slideInFromRight {
+    from { -webkit-transform: translateX(100%) translateZ(0); }
+    to   { -webkit-transform: translateX(0) translateZ(0); }
+}
+@-webkit-keyframes slideInFromLeft {
+    from { -webkit-transform: translateX(-100%) translateZ(0); }
+    to   { -webkit-transform: translateX(0) translateZ(0); }
+}
+@-webkit-keyframes slideInFromUp {
+    from { -webkit-transform: translateY(-100%) translateZ(0); }
+    to   { -webkit-transform: translateY(0) translateZ(0); }
+}
+@-webkit-keyframes slideInFromDown {
+    from { -webkit-transform: translateY(100%) translateZ(0); }
+    to   { -webkit-transform: translateY(0) translateZ(0); }
+}
+@-webkit-keyframes slideOutToLeft {
+    from { -webkit-transform: translateX(0) translateZ(0); }
+    to   { -webkit-transform: translateX(-100%) translateZ(0); }
+}
+@-webkit-keyframes slideOutToRight {
+    from { -webkit-transform: translateX(0) translateZ(0); }
+    to   { -webkit-transform: translateX(100%) translateZ(0); }
+}
+@-webkit-keyframes slideOutToUp {
+    from { -webkit-transform: translateY(0) translateZ(0); }
+    to   { -webkit-transform: translateY(-100%) translateZ(0); }
+}
+@-webkit-keyframes slideOutToDown {
+    from { -webkit-transform: translateY(0) translateZ(0); }
+    to   { -webkit-transform: translateY(100%) translateZ(0); }
+}
+    </style>
+</head>
+<body>
+    <div class="page active" id="main">
+        <ul><li>你可以往上滑</li><li>也可以往下滑</li><li>还可以左右滑</li></ul>
+    </div>
+    <div class="page" id="top">
+        <ul><li>你可以往上滑</li></ul>
+    </div>
+    <div class="page" id="bottom">
+        <ul><li>你可以往下滑</li></ul>
+    </div>
+    <div class="page" id="right">
+        <ul><li>你可以往右滑</li></ul>               
+    </div>
+    <div class="page" id="left">
+        <ul><li>你可以往左滑</li></ul>
+    </div>
+    
+    <script type="text/javascript" src="http://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/lib/zepto.js"></script>
+    <script type="text/javascript">
+//     Zepto.js
+//     (c) 2010-2013 Thomas Fuchs
+//     Zepto.js may be freely distributed under the MIT license.
+
+;(function($){
+  var touch = {},
+    touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
+    longTapDelay = 750,
+    gesture
+
+  function swipeDirection(x1, x2, y1, y2) {
+    return Math.abs(x1 - x2) >=
+      Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down')
+  }
+
+  function longTap() {
+    longTapTimeout = null
+    if (touch.last) {
+      touch.el.trigger('longTap')
+      touch = {}
+    }
+  }
+
+  function cancelLongTap() {
+    if (longTapTimeout) clearTimeout(longTapTimeout)
+    longTapTimeout = null
+  }
+
+  function cancelAll() {
+    if (touchTimeout) clearTimeout(touchTimeout)
+    if (tapTimeout) clearTimeout(tapTimeout)
+    if (swipeTimeout) clearTimeout(swipeTimeout)
+    if (longTapTimeout) clearTimeout(longTapTimeout)
+    touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null
+    touch = {}
+  }
+
+  function isPrimaryTouch(event){
+    return (event.pointerType == 'touch' ||
+      event.pointerType == event.MSPOINTER_TYPE_TOUCH)
+      && event.isPrimary
+  }
+
+  function isPointerEventType(e, type){
+    return (e.type == 'pointer'+type ||
+      e.type.toLowerCase() == 'mspointer'+type)
+  }
+
+  $(document).ready(function(){
+    var now, delta, deltaX = 0, deltaY = 0, firstTouch, _isPointerType
+
+    if ('MSGesture' in window) {
+      gesture = new MSGesture()
+      gesture.target = document.body
+    }
+
+    $(document)
+      .bind('MSGestureEnd', function(e){
+        var swipeDirectionFromVelocity =
+          e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
+        if (swipeDirectionFromVelocity) {
+          touch.el.trigger('swipe')
+          touch.el.trigger('swipe'+ swipeDirectionFromVelocity)
+        }
+      })
+      .on('touchstart MSPointerDown pointerdown', function(e){
+        if((_isPointerType = isPointerEventType(e, 'down')) &&
+          !isPrimaryTouch(e)) return
+        firstTouch = _isPointerType ? e : e.touches[0]
+        if (e.touches && e.touches.length === 1 && touch.x2) {
+          // Clear out touch movement data if we have it sticking around
+          // This can occur if touchcancel doesn't fire due to preventDefault, etc.
+          touch.x2 = undefined
+          touch.y2 = undefined
+        }
+        now = Date.now()
+        delta = now - (touch.last || now)
+        touch.el = $('tagName' in firstTouch.target ?
+          firstTouch.target : firstTouch.target.parentNode)
+        touchTimeout && clearTimeout(touchTimeout)
+        touch.x1 = firstTouch.pageX
+        touch.y1 = firstTouch.pageY
+        if (delta > 0 && delta <= 250) touch.isDoubleTap = true
+        touch.last = now
+        longTapTimeout = setTimeout(longTap, longTapDelay)
+        // adds the current touch contact for IE gesture recognition
+        if (gesture && _isPointerType) gesture.addPointer(e.pointerId);
+      })
+      .on('touchmove MSPointerMove pointermove', function(e){
+        if((_isPointerType = isPointerEventType(e, 'move')) &&
+          !isPrimaryTouch(e)) return
+        firstTouch = _isPointerType ? e : e.touches[0]
+        cancelLongTap()
+        touch.x2 = firstTouch.pageX
+        touch.y2 = firstTouch.pageY
+
+        deltaX += Math.abs(touch.x1 - touch.x2)
+        deltaY += Math.abs(touch.y1 - touch.y2)
+      })
+      .on('touchend MSPointerUp pointerup', function(e){
+        if((_isPointerType = isPointerEventType(e, 'up')) &&
+          !isPrimaryTouch(e)) return
+        cancelLongTap()
+
+        // swipe
+        if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) ||
+            (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
+
+          swipeTimeout = setTimeout(function() {
+            touch.el.trigger('swipe')
+            touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
+            touch = {}
+          }, 0)
+
+        // normal tap
+        else if ('last' in touch)
+          // don't fire tap when delta position changed by more than 30 pixels,
+          // for instance when moving to a point and back to origin
+          if (deltaX < 30 && deltaY < 30) {
+            // delay by one tick so we can cancel the 'tap' event if 'scroll' fires
+            // ('tap' fires before 'scroll')
+            tapTimeout = setTimeout(function() {
+
+              // trigger universal 'tap' with the option to cancelTouch()
+              // (cancelTouch cancels processing of single vs double taps for faster 'tap' response)
+              var event = $.Event('tap')
+              event.cancelTouch = cancelAll
+              touch.el.trigger(event)
+
+              // trigger double tap immediately
+              if (touch.isDoubleTap) {
+                if (touch.el) touch.el.trigger('doubleTap')
+                touch = {}
+              }
+
+              // trigger single tap after 250ms of inactivity
+              else {
+                touchTimeout = setTimeout(function(){
+                  touchTimeout = null
+                  if (touch.el) touch.el.trigger('singleTap')
+                  touch = {}
+                }, 250)
+              }
+            }, 0)
+          } else {
+            touch = {}
+          }
+          deltaX = deltaY = 0
+
+      })
+      // when the browser window loses focus,
+      // for example when a modal dialog is shown,
+      // cancel all ongoing events
+      .on('touchcancel MSPointerCancel pointercancel', cancelAll)
+
+    // scrolling the window indicates intention of the user
+    // to scroll, not tap or swipe, so cancel all ongoing events
+    $(window).on('scroll', cancelAll)
+  })
+
+  ;['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
+    'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(function(eventName){
+    $.fn[eventName] = function(callback){ return this.on(eventName, callback) }
+  })
+})(Zepto)
+
+$(document).on('touchmove', function(e){
+    if( e.isScrollable )
+        e.preventDefault();
+});
+
+$('.page').css('height', window.innerHeight).on('touchmove', function(e){
+    e.isScrollable = true;
+});
+
+var $main   = $('#main');
+var $left   = $('#left');
+var $right  = $('#right');
+var $top    = $('#top');
+var $bottom = $('#bottom');
+
+var changePage = function($prev, $next, action){
+    
+    var prevClass;
+    var nextClass;
+    
+    function end(){
+        $prev.removeClass('active '+prevClass);
+    }
+    
+    switch (action[0]){
+        case 'slideLeft' : prevClass = 'slide out left';  break;
+        case 'slideRight': prevClass = 'slide out right'; break;
+        case 'slideUp'   : prevClass = 'slide out up';    break;
+        case 'slideDown' : prevClass = 'slide out down';  break;
+        case 'static'    : prevClass = '';                break;
+    }
+    
+    switch (action[1]){
+        case 'slideLeft' : nextClass = 'slide in right';  break;
+        case 'slideRight': nextClass = 'slide in left';   break;
+        case 'slideUp'   : nextClass = 'slide in down';   break;
+        case 'slideDown' : nextClass = 'slide in up';     break;
+        case 'static'    : nextClass = '';                break;
+    }
+    
+    $next.addClass('active');
+    $prev.addClass(prevClass);
+    
+    if( nextClass != '' ){
+        $next.addClass(nextClass).on('webkitAnimationEnd',function(){
+            $next.removeClass(nextClass).off('webkitAnimationEnd');
+            end();
+        });
+    }
+    else if( prevClass != '' ){
+        $prev.on('webkitAnimationEnd',function(){
+            $prev.off('webkitAnimationEnd');
+            end();
+        });
+    }
+
+    
+}
+
+$main.on('swipeUp', function(e){
+    changePage($main, $bottom, ['static', 'slideUp']);
+});
+$main.on('swipeDown', function(e){
+    changePage($main, $top, ['slideDown', 'static']);
+});
+$main.on('swipeLeft', function(e){
+    changePage($main, $right, ['slideLeft', 'slideLeft']); 
+});
+$main.on('swipeRight', function(e){
+    changePage($main, $left, ['slideRight', 'slideRight']);
+});
+
+$top.on('swipeUp', function(e){
+    changePage($top, $main, ['slideUp', 'slideUp']);
+});
+
+$bottom.on('swipeDown', function(e){
+    changePage($bottom, $main, ['slideDown', 'slideDown']);
+});
+
+$right.on('swipeRight', function(e){
+    changePage($right, $main, ['static', 'slideRight']);
+});
+
+$left.on('swipeLeft', function(e){
+    changePage($left, $main, ['slideLeft', 'static']);
+});
+
+    </script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>
+</body>
+</html>
+    
+    
+    
+    
+    
+    
+    
+    
+    

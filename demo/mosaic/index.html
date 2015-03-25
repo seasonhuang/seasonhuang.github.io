@@ -17,12 +17,29 @@
 			background-color: rgba(0,0,0,.9);
 		}
 
-		body { 
-			display:-webkit-box; 
-			-webkit-box-orient: horizontal; 
-			-webkit-box-pack: center; 
-			-webkit-box-align: center; 
+		body {
 			text-align:center;
+		}
+
+        .main-outer {
+            display:-webkit-box; 
+            -webkit-box-orient: horizontal; 
+            -webkit-box-pack: center; 
+            -webkit-box-align: center;
+
+            width: 100%;
+            height: 100%;
+        }
+
+		.main {
+			position: relative;
+		}
+
+		.main canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+            z-index: -1;
 		}
 
 		.control {
@@ -134,6 +151,26 @@
 			height: 7px;
 			border-radius: 7px;
 		}
+        .action {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            color: white;
+        }
+        .action i {
+            display: none;
+            position: absolute;
+            padding: 5px 20px;
+            font-style: normal;
+        }
+        .action i.undo {
+            left: 0;
+        }
+        .action i.redo {
+            right: 0;
+        }
 		</style>
 
 		<script type="text/javascript">
@@ -142,10 +179,18 @@
 		</script>
 </head>
 <body>
-	<div class="main">
-		<canvas id="main" width="0" height="0"></canvas>
-	</div>
-    
+    <p id="console" style="position: fixed; top: 0; left: 0; width: 100%; height: 30px; color: white;"></p>
+    <div class="action">
+        <i class="undo" id="undo">撤销</i>
+        <i class="redo" id="redo">重做</i>
+    </div>
+    <div class="main-outer">
+        <div class="main">
+            <img id="main-image" src="">
+            <canvas id="main" width="0" height="0"></canvas>
+        </div>
+    </div>
+    	    
     <div class="add">
     	<label>+<input id="add-file" type="file" accept="image/*" style="display:none;"></label>
     </div>
@@ -162,9 +207,10 @@
     	</div>
     	<div class="image">
     		<label class="btn">选择图片<input id="change-file" type="file" accept="image/*" style="display:none;"></label>
-    		<button class="btn">保存图片</button> 
+    		<button class="btn" id="save-file">保存图片</button> 
     	</div>
     </div>
+    <script type="text/javascript" src="http://hammerjs.github.io/dist/hammer.min.js"></script>
     <script type="text/javascript">
         
         var canvas 	= document.querySelector("#main");
@@ -172,10 +218,11 @@
         var width	= canvas.width;
         var height	= canvas.height;
         var offset  = canvas.getBoundingClientRect();
+        var image   = document.querySelector('#main-image');
 
         var originalWidth  = width;
         var originalHeight = height;
-        var maxWidth = window.innerWidth * .9;
+        var maxWidth = image.width = window.innerWidth * .9 | 0;
         
         var RAF = (function(){
         	return 	window.requestAnimationFrame		||
@@ -198,18 +245,108 @@
                            || window.webkitURL.revokeObjectURL;
 
         var dom = {
+            mainOuter: document.querySelector('.main-outer'),
         	add: document.querySelector('.add'),
         	addFile: document.querySelector('#add-file'),
         	changeFile: document.querySelector('#change-file'),
+            saveFile: document.querySelector('#save-file'),
         	putUp: document.querySelector('.put-up'),
         	putDown: document.querySelector('.put-down'),
-        	ctrl: document.querySelector('.control')
+        	ctrl: document.querySelector('.control'),
+            undo: document.querySelector('#undo'),
+            redo: document.querySelector('#redo')
         };
 
+        var file;
+
+        var mosaicCanvas = document.createElement('canvas');
+        var mosaicCtx = mosaicCanvas.getContext('2d');
+        var pointSize = 10;
+
+        var lastX, lastY, imageData;
+        var operations = [];
+        var lineWidth = 3;
 
 
-        function show(dom){
-        	dom.style.display = 'block';
+        var UndoManager = {
+
+            data: [],
+
+            push: function(obj, redo){
+                this.data.push(obj);
+                show(dom.undo, true);
+                !redo && RedoManager.empty();
+            },
+
+            undo: function(){
+                var obj = this.data.pop();
+                RedoManager.push(obj);
+                this.draw();
+
+                if (this.data.length == 0) hide(dom.undo);
+            },
+
+            draw: function(){
+                var i, li = this.data.length, itemi, j, lj;
+
+                canvas.width = width;
+                canvas.height = height;
+
+                for (i=0; i<li; i++) {
+                    item = this.data[i];
+                    for (j=0,lj=item.length; j<lj; j++) {
+                        if (item[j].method == 'drawMosaic')
+                            drawMosaic(item[j].x, item[j].y);
+                        else if (item[j].method == 'drawLine')
+                            drawLine(item[j].x1, item[j].y1, item[j].x2, item[j].y2);
+                    }                    
+                }
+            },
+
+            empty: function(){
+                this.data = [];
+                hide(dom.undo);
+            }
+
+        };
+
+        var RedoManager = {
+
+            data: [],
+
+            push: function(obj){
+                this.data.push(obj);
+                show(dom.redo, true);
+            },
+
+            redo: function(){
+                var obj = this.data.pop();
+                UndoManager.push(obj, true);
+                RedoManager.draw(obj);
+
+                if (this.data.length == 0) hide(dom.redo);
+            },
+
+            draw: function(obj){
+                var i, l = obj.length, item;
+                for (i=0; i<l; i++) {
+                    item = obj[i];
+                    if (item.method == 'drawMosaic')
+                        drawMosaic(item.x, item.y);
+                    else if (item.method == 'drawLine')
+                        drawLine(item.x1, item.y1, item.x2, item.y2);
+                }
+            },
+
+            empty: function(){
+                this.data = [];
+                hide(dom.redo);
+            }
+
+        };
+
+        function show(dom, inline){
+        	dom.style.display = inline ? 'inline' : 'block';
         }
 
         function hide(dom){
@@ -221,35 +358,116 @@
         	show(dom.putUp);
         }
 
-        function lineWidthMatrix(level){
-        	var Matrix = [
-        		[0],
-        		[-width-1,-width,-width+1,-1,0,1,width-1,width,width+1]
-        	];
-        	return Matrix[level];
+        function onFileChange(e){
+            revokeObjectURL(file);
+        	file = e.target.files[0];
+
+            var tempImage = new Image();
+            var url = createObjectURL(file);
+
+        	tempImage.onload = function(){
+                originalWidth  = this.width;
+                originalHeight = this.height;
+
+                if (this.height > window.innerHeight) {
+                    dom.mainOuter.style.height = originalHeight + 'px';
+                    dom.mainOuter.style.marginTop  = -(originalHeight-window.innerHeight)/2 + 'px';
+                }
+                    
+        		if (this.width > maxWidth) {
+        			width  = maxWidth;
+        			height = width/this.width * this.height | 0;
+                    dom.mainOuter.style.width = originalWidth + 'px';
+                    dom.mainOuter.style.marginLeft = -(originalWidth-window.innerWidth)/2 + 'px';
+        		} else {
+        			width  = this.width;
+	        		height = this.height;
+        		}
+
+                image.width  = canvas.width  = mosaicCanvas.width  = width;
+                image.height = canvas.height = mosaicCanvas.height = height;
+                    
+                mosaicCtx.drawImage(tempImage, 0, 0, width, height);
+                image.src = url;
+                tempImage = null;
+
+                hide(dom.add);
+        		hidePanic();
+                UndoManager.empty();
+                RedoManager.empty();
+        		generateMosaic();
+        	}
+        	tempImage.src = url;
         }
 
-        function onFileChange(e){
-        	var file = e.target.files[0];
+        function generateMosaic(){
+            var color = 'rgba(0,0,0,0)';
 
-        	var image = new Image();
-        	image.onload = function(){
-        		if (this.width > maxWidth) {
-        			width = canvas.width = maxWidth;
-        			height = canvas.height = width/this.width * this.height;
-        		} else {
-        			width = canvas.width = this.width;
-	        		height = canvas.height = this.height;
-        		}
-	        		
-        		ctx.drawImage(image, 0, 0, width, height);
-        		hide(dom.add);
-        		revokeObjectURL(file);
-        		hidePanic();
+        	imageData = mosaicCtx.getImageData(0,0,width,height).data;
+            mosaicCanvas.width = width;
+            mosaicCanvas.height = height;
+
+        	for (var j = 0; j < height; j += pointSize) {
+        		for (var i = 0; i < width; i += pointSize) {
+                    mosaicCtx.fillStyle = getAverageColor(i,j);
+                    mosaicCtx.fillRect(i, j, pointSize, pointSize);
+	        	}
         	}
-        	image.src = createObjectURL(file);
+	        	
+        }
+
+        function getAverageColor(x, y){
+        	var total = 0, r = 0, g = 0, b = 0, a = 0;
+        	var index;
+        	for (var j = 0; j < pointSize; j++) {
+        		for (var i = 0; i < pointSize; i++) {
+        			if (x+i < width && y+i < height) {
+        				total ++;
+        				index = ((y+j)*width + (x+i))*4;
+        				r += imageData[index];
+        				g += imageData[index+1];
+        				b += imageData[index+2];
+        			}
+        		}
+        	}
+
+        	r = r/total | 0;
+        	g = g/total | 0;
+        	b = b/total | 0;
+
+        	return 'rgba('+r+','+g+','+b+',1)';
         }
         
+        function drawMosaic(x, y){
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, 2*Math.PI);
+            ctx.clip();
+            ctx.drawImage(mosaicCanvas, 0, 0, width, height);
+            ctx.restore();
+        }
+
+        function drawLine(x1, y1, x2, y2){
+            var ratio  = (y2-y1)/(x2-x1);
+            var minX = Math.min(x1, x2);
+            var minY = Math.min(y1, y2);
+            var maxX = Math.max(x1, x2);
+            var maxY = Math.max(y1, y2);
+            var x, y;
+            if (ratio <= 1) {
+                for (x = minX+1; x < maxX; x += 1) {
+                    y = ratio*1 + (minX == x1 ? y1 : y2);
+                    drawMosaic(x, y);
+                }
+            } else if (ratio > 1) {
+                for (y = minY+1; y < maxY; y += 1) {
+                    x = 1 / ratio + (minY == y1 ? x1 : x2);
+                    drawMosaic(x, y);
+                }
+            }
+        }
+
+
         dom.putUp.addEventListener('touchstart', function(e){
         	e.preventDefault();
         	dom.ctrl.classList.add('show');
@@ -258,24 +476,39 @@
 
         dom.putDown.addEventListener('touchstart', hidePanic);
         
-
         dom.addFile.addEventListener('change', onFileChange);
+
         dom.changeFile.addEventListener('change', onFileChange);
 
+        dom.saveFile.addEventListener('touchend', function(){
+            if (imageData) {
+                window.location.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream;filename=mosaic.png');
+            }
+        });
 
+        dom.undo.addEventListener('touchend', function(){
+            UndoManager.undo();
+        });
 
-        var lastX, lastY, imageData;
-        var lineWidth = 3;
+        dom.redo.addEventListener('touchend', function(){
+            RedoManager.redo();
+        }); 
 
         canvas.addEventListener('touchstart', function(e){
         	e.preventDefault();
         	e.stopPropagation();
 
         	var touch = e.changedTouches[0];
-        	imageData = ctx.getImageData(0,0,width,height);
         	offset = canvas.getBoundingClientRect();
         	lastX  = touch.clientX - offset.left;
         	lastY  = touch.clientY - offset.top;
+
+            drawMosaic(lastX, lastY);
+            operations = [{
+                method: 'drawMosaic',
+                x: lastX,
+                y: lastY
+            }];
         });
 
         canvas.addEventListener('touchmove', function(e){
@@ -286,24 +519,43 @@
         	var currX = touch.clientX - offset.left;
         	var currY = touch.clientY - offset.top;
 
-        	var index = width * 4 * (currY-1) + (currX-1) * 4;
+            drawLine(lastX, lastY, currX, currY);
+        	drawMosaic(currX, currY);
 
+            lastX = currX;
+            lastY = currY;
+
+            operations.push({
+                method: 'drawLine',
+                x1: lastX,
+                y1: lastY,
+                x2: currX,
+                y2: currY
+            },{
+                method: 'drawMosaic',
+                x: currX,
+                y: currY
+            });
+        });
+
+        canvas.addEventListener('touchend', function(){
+            UndoManager.push(operations);
         });
 
 
+        var hammer = new Hammer(image);
+        var cons = document.querySelector('#console');
+        var w = image.width;
+        var scale = 1;
+        hammer.get('pinch').set({ enable: true });
 
-
-        
-        function render(){
-        	ctx.fillStyle = 'rgb(200,200,200)';
-        	ctx.fillRect(0,0,width,height);
-        	
-        }
-        
-        (function(){
-        	//RAF( arguments.callee );
-        	//render();
-        })();
+        hammer.on('pinchmove', function(ev){
+            var initialWidth  = image.width,
+                initialHeight = image.height;
+            image.width = initialWidth * ev.scale;
+            image.height = initialHeight * ev.scale;
+            cons.innerText = [ev.scale, initialWidth*ev.scale, initialHeight*ev.scale, image.width].join(', ');
+        });
 
     </script>
     <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>

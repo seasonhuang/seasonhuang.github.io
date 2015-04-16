@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style type="text/css">
+
+body, ul, ol, h1, h2, h3, h6, p, em, strong, i, sub, sup, img, textarea, input { margin: 0; padding: 0; }
+body{ -webkit-touch-callout: none; -webkit-user-select: none; text-align: center; }
+ul{ list-style: none; }
+
+h2{ height: 60px; line-height: 60px; }
+li{ line-height: 30px; }
+
+.native-scroll-wrap{ 
+    overflow-x: hidden; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; 
+    -webkit-transform: translate3d(0,0,0); 
+    -webkit-backface-visibility: hidden; 
+    -webkit-perspective: 1000;
+}
+.native-scroll{ 
+    position: relative; 
+    overflow-x: hidden; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch;   
+    -webkit-transform: translateZ(0);
+    
+    border: 1px gray dashed; margin: 0 30px;
+    height: 200px;
+
+}
+.container {
+    /*-webkit-transition: -webkit-transform .3s ease-in-out;
+    -webkit-transform: translateY(40px);*/
+}
+.content {
+    min-height: 200px;
+    padding-top: 1px;
+}
+.pull-to-refresh {
+        line-height: 40px;
+        height: 40px;
+        width: 100%; 
+        /*
+        position: absolute; 
+        left: 0; 
+        top: -40px;
+*/
+    margin: -40px auto 0;
+        font-size: 0.85em;
+
+        z-index: 0;
+        -webkit-backface-visibility: hidden;
+}
+
+    </style>
+</head>
+<body>
+<h2>下拉刷新</h2>
+<div class="native-scroll-wrap">
+<div class="native-scroll">
+    <div class="container">
+        <div class="pull-to-refresh">
+            pull to refresh.
+        </div>
+        <ul class="content">
+            <li>item 0</li>
+            <li>item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+            <li>item 4</li>
+            <li>item 5</li>
+            <li>item 6</li>
+            <li>item 7</li>
+            <li>item 8</li>
+            <li>item 9</li>
+            <li>item 10</li>
+            <li>item 11</li>
+            <li>item 12</li>
+            <li>item 13</li>
+            <li>item 14</li>
+            <li>item 15</li>
+            <li>item 16</li>
+            <li>item 17</li>
+            <li>item 18</li>
+            <li>item 19</li>
+            <li>item 20</li>
+            <li>item 21</li>
+            <li>item 22</li>
+            <li>item 23</li>
+            <li>item 24</li>
+            <li>item 25</li>
+            <li>item 26</li>
+            <li>item 27</li>
+            <li>item 28</li>
+            <li>item 29</li>
+            <li>item 0</li>
+            <li>item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+            <li>item 4</li>
+            <li>item 5</li>
+            <li>item 6</li>
+            <li>item 7</li>
+            <li>item 8</li>
+            <li>item 9</li>
+            <li>item 10</li>
+            <li>item 11</li>
+            <li>item 12</li>
+            <li>item 13</li>
+            <li>item 14</li>
+            <li>item 15</li>
+            <li>item 16</li>
+            <li>item 17</li>
+            <li>item 18</li>
+            <li>item 19</li>
+            <li>item 20</li>
+            <li>item 21</li>
+            <li>item 22</li>
+            <li>item 23</li>
+            <li>item 24</li>
+            <li>item 25</li>
+            <li>item 26</li>
+            <li>item 27</li>
+            <li>item 28</li>
+            <li>item 29</li>
+        </ul>
+    </div>
+</div>
+</div>
+    <script type="text/javascript">
+var wrap      = document.getElementsByClassName('native-scroll').item(0);
+var container = document.getElementsByClassName('container').item(0);
+var tips      = document.getElementsByClassName('pull-to-refresh').item(0);
+var ul        = document.getElementsByTagName('ul').item(0);
+
+var timer = null;
+
+ul.addEventListener('touchmove', function(evt){
+    if( wrap.scrollTop < 0 ){
+        if( wrap.scrollTop < -40 ){
+            tips.innerText = 'release';
+        }
+        else if( wrap.scrollTop > -40 ){
+            tips.innerText = 'pull to refresh';
+        }
+    }
+});
+
+ul.addEventListener('touchend', function(evt){
+    if( wrap.scrollTop < -40 ){
+        tips.innerText = 'loading';
+        container.style.webkitTransform = 'translateY(40px)';
+        setTimeout( function(){
+            //tips.style.margin = '';
+            container.style.webkitTransform = '';
+        }, 2000 );
+    }
+});
+    </script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>
+</body>
+</html>

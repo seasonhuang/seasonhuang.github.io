@@ -39,18 +39,19 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-            z-index: -1;
+            z-index: 1;
 		}
 
 		.control {
 			position: fixed;
 			left: 0;
 			bottom: 0;
+            z-index: 100;
 			width: 80%;
 			height: 280px;
 			background-color: white;
 			padding: 0 10%;
-			-webkit-transition: all .3s ease-out;
+			-webkit-transition: all .5s ease-out;
 			-webkit-transform: translate3d(0,300px,0);
 		}
 		.control.show {
@@ -207,20 +208,20 @@
     	</div>
     	<div class="image">
     		<label class="btn">选择图片<input id="change-file" type="file" accept="image/*" style="display:none;"></label>
-    		<button class="btn" id="save-file">保存图片</button> 
+    		<button class="btn" id="save-file">保存图片</button>
     	</div>
     </div>
     <script type="text/javascript" src="http://hammerjs.github.io/dist/hammer.min.js"></script>
     <script type="text/javascript">
         
-        var canvas 	= document.querySelector("#main");
-        var ctx 	= canvas.getContext('2d');
-        var width	= canvas.width;
-        var height	= canvas.height;
-        var offset  = canvas.getBoundingClientRect();
-        var image   = document.querySelector('#main-image');
+        var canvas 	=  document.querySelector("#main");
+        var ctx 	=  canvas.getContext('2d');
+        var width	=  canvas.width;
+        var height	=  canvas.height;
+        var offset  =  canvas.getBoundingClientRect();
+        var image   =  document.querySelector('#main-image');
 
-        var originalWidth  = width;
+        var originalWidth  = width; 
         var originalHeight = height;
         var maxWidth = image.width = window.innerWidth * .9 | 0;
         
@@ -246,6 +247,7 @@
 
         var dom = {
             mainOuter: document.querySelector('.main-outer'),
+            main: document.querySelector('.main'),
         	add: document.querySelector('.add'),
         	addFile: document.querySelector('#add-file'),
         	changeFile: document.querySelector('#change-file'),
@@ -258,6 +260,8 @@
         };
 
         var file;
+
+        var scale = 1;
 
         var mosaicCanvas = document.createElement('canvas');
         var mosaicCtx = mosaicCanvas.getContext('2d');
@@ -361,28 +365,34 @@
         function onFileChange(e){
             revokeObjectURL(file);
         	file = e.target.files[0];
+            if (!file) return;
 
             var tempImage = new Image();
             var url = createObjectURL(file);
 
         	tempImage.onload = function(){
-                originalWidth  = this.width;
-                originalHeight = this.height;
+                width  = this.width;
+                height = this.height;
 
-                if (this.height > window.innerHeight) {
-                    dom.mainOuter.style.height = originalHeight + 'px';
-                    dom.mainOuter.style.marginTop  = -(originalHeight-window.innerHeight)/2 + 'px';
+                if (height > window.innerHeight) {
+                    dom.mainOuter.style.height = height + 'px';
+                    dom.mainOuter.style.marginTop = -(height-window.innerHeight)/2 + 'px';
+                } else {
+                    dom.mainOuter.style.height = '100%';
+                    dom.mainOuter.style.marginTop = '0px';
                 }
                     
-        		if (this.width > maxWidth) {
-        			width  = maxWidth;
-        			height = width/this.width * this.height | 0;
-                    dom.mainOuter.style.width = originalWidth + 'px';
-                    dom.mainOuter.style.marginLeft = -(originalWidth-window.innerWidth)/2 + 'px';
+        		if (width > maxWidth) {
+                    scale  = maxWidth/width;
+                    dom.mainOuter.style.width = width + 'px';
+                    dom.mainOuter.style.marginLeft = -(width-window.innerWidth)/2 + 'px';
         		} else {
-        			width  = this.width;
-	        		height = this.height;
-        		}
+                    scale = 1;
+                    dom.mainOuter.style.width = '100%';
+                    dom.mainOuter.style.marginLeft = '0px';
+                }
+
+                dom.main.style.webkitTransform = 'scale('+scale+','+scale+')';
 
                 image.width  = canvas.width  = mosaicCanvas.width  = width;
                 image.height = canvas.height = mosaicCanvas.height = height;
@@ -406,6 +416,7 @@
         	imageData = mosaicCtx.getImageData(0,0,width,height).data;
             mosaicCanvas.width = width;
             mosaicCanvas.height = height;
+            pointSize = 10 / scale | 0;
 
         	for (var j = 0; j < height; j += pointSize) {
         		for (var i = 0; i < width; i += pointSize) {
@@ -441,30 +452,37 @@
         function drawMosaic(x, y){
             ctx.save();
             ctx.beginPath();
-            ctx.arc(x, y, 10, 0, 2*Math.PI);
+            ctx.arc(x/scale, y/scale, 10/scale, 0, 2*Math.PI);
             ctx.clip();
+            ctx.closePath();
             ctx.drawImage(mosaicCanvas, 0, 0, width, height);
             ctx.restore();
         }
 
         function drawLine(x1, y1, x2, y2){
-            var ratio  = (y2-y1)/(x2-x1);
+            var ratio = Math.abs((y2-y1)/(x2-x1));
             var minX = Math.min(x1, x2);
             var minY = Math.min(y1, y2);
             var maxX = Math.max(x1, x2);
             var maxY = Math.max(y1, y2);
             var x, y;
+
+            ctx.save();
+            ctx.beginPath();
             if (ratio <= 1) {
                 for (x = minX+1; x < maxX; x += 1) {
                     y = ratio*1 + (minX == x1 ? y1 : y2);
-                    drawMosaic(x, y);
+                    ctx.arc(x/scale, y/scale, 10/scale, 0, 2*Math.PI);
                 }
-            } else if (ratio > 1) {
+            } else {
                 for (y = minY+1; y < maxY; y += 1) {
                     x = 1 / ratio + (minY == y1 ? x1 : x2);
-                    drawMosaic(x, y);
+                    ctx.arc(x/scale, y/scale, 10/scale, 0, 2*Math.PI);
                 }
             }
+            ctx.clip();
+            ctx.drawImage(mosaicCanvas, 0, 0, width, height);
+            ctx.restore();
         }
 
 
@@ -481,6 +499,14 @@
         dom.changeFile.addEventListener('change', onFileChange);
 
         dom.saveFile.addEventListener('touchend', function(){
+            var tmpCanvas = document.createElement('canvas');
+            var tmpCtx = tmpCanvas.getContext('2d');
+            tmpCanvas.width  = width;
+            tmpCanvas.height = height;
+            tmpCtx.drawImage(image,0,0,width,height);
+            tmpCtx.drawImage(canvas,0,0,width,height);
+            console.log(tmpCanvas.toDataURL('image/png'));
+            return;
             if (imageData) {
                 window.location.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream;filename=mosaic.png');
             }
@@ -502,6 +528,7 @@
         	offset = canvas.getBoundingClientRect();
         	lastX  = touch.clientX - offset.left;
         	lastY  = touch.clientY - offset.top;
+            console.log(lastX,lastY);
 
             drawMosaic(lastX, lastY);
             operations = [{
@@ -522,9 +549,6 @@
             drawLine(lastX, lastY, currX, currY);
         	drawMosaic(currX, currY);
 
-            lastX = currX;
-            lastY = currY;
-
             operations.push({
                 method: 'drawLine',
                 x1: lastX,
@@ -536,9 +560,24 @@
                 x: currX,
                 y: currY
             });
+
+            lastX = currX;
+            lastY = currY;
         });
 
-        canvas.addEventListener('touchend', function(){
+        canvas.addEventListener('touchend', function(e){
+            var touch = e.changedTouches[0];
+            var currX = touch.clientX - offset.left;
+            var currY = touch.clientY - offset.top;
+
+            drawMosaic(currX, currY);
+
+            operations.push({
+                method: 'drawMosaic',
+                x: currX,
+                y: currY
+            });
+
             UndoManager.push(operations);
         });
 
@@ -558,6 +597,6 @@
         });
 
     </script>
-    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>
+    <!-- <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script> -->
 </body>
 </html>

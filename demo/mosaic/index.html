@@ -1,24 +1,25 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="format-detection" content="telephone=no">
-		<title>马赛克</title>
-		
-		<style type="text/css">
-		html,body { 
-			margin: 0; 
-			padding: 0; 
-			width:100%; 
-			height:100%; 
-			overflow: hidden;
-		}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <title>马赛克</title>
 
-		body {
-			text-align:center;
-		}
+        <style type="text/css">
+        html,body { 
+        	margin: 0; 
+        	padding: 0; 
+        	width:100%; 
+        	height:100%; 
+        	overflow: hidden;
+        }
+
+        body {
+        	text-align:center;
+            -webkit-user-select: none;
+        }
 
         .main-outer {
             display:-webkit-box; 
@@ -31,147 +32,147 @@
         }
 
         .main-filter {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,.9);
-            -webkit-filter: blur(15px) saturate(200%);
+            -webkit-filter: blur(20px) contrast(200%) saturate(200%);
         }
 
         .main-nofilter {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,.9);
             overflow: hidden;
-            -webkit-transition: height 0s cubic-bezier(.54,1.63,0,.87);
+            -webkit-transition: height 0.3s cubic-bezier(.54,1.63,0,.87);
         }
 
-		.main {
-			position: relative;
-		}
+        .main {
+        	position: relative;
+        }
 
-		.main canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
+        .main canvas {
+        	position: absolute;
+        	top: 0;
+        	left: 0;
             z-index: 1;
-		}
+        }
 
-		.control {
-			position: fixed;
-			left: 0;
-			bottom: 0;
+        .control {
+            position: fixed;
+            left: 0;
+            bottom: 0;
             z-index: 100;
-			width: 80%;
-			height: 280px;
-			background-color: rgba(255,255,255,.7);
-			padding: 0 10%;
-			-webkit-transition: all .5s ease-out;
-			-webkit-transform: translate3d(0,300px,0);
-		}
-		.control.show {
-			-webkit-transition-timing-function: cubic-bezier(.54,1.63,0,.87);
-			-webkit-transform: translate3d(0,100px,0);
-		}
-		.control.hide {
-			-webkit-transition-timing-function: ease-out;
-			-webkit-transform: translate3d(0,300px,0);
-		}
-		.range {
-			margin: 0 auto;
-		}
-		.range label {
-			display: inline-block;
-			width: 20%;
-			vertical-align: top;
-			height: 40px;
-			line-height: 40px;
-		}
-		.range input {
-			margin: 0;
-			width: 80%;
-			height: 40px;
-		}
-		.image {
-			text-align: center;
-		}
-		.image .btn {
-			margin-top: 5px;
-			width: 45%;
-			display: inline-block;
-		}
-		button.btn {
-			border: 0;
-			outline: 0;
-			width: 100%;
-			-webkit-appearance: none;
-		}
-		.btn {
-			display: block;
-			background-color: #04be02;
-			color: white;
-			border-radius: 5px;
-			-webkit-border-radius: 5px;
-			height: 38px;
-			line-height: 38px;
-			text-align: center;
-			box-sizing: border-box;
-			-webkit-box-sizing: border-box;
-			margin: 0 auto;
-			padding: 0 14px;
-			font-size: 15px;
-		}
-		.add {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			width: 80px;
-			height: 80px;
-			margin: -40px 0 0 -40px;
-		}
-		.add label {
-			display: block;
-			border: 1px solid rgba(255,255,255,.5);
-			border-radius: 100%;
-			-webkit-border-radius: 100%;
-			font-size: 50px;
-			color: rgba(255,255,255,.5);
-			text-align: center;
-			height: 80px;
-			line-height: 80px;
-		}
-		.put-up {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			height: 30px;
-			text-align: center;
-		}
-		.put-up span {
-			background-color: rgba(255,255,255,.8);
-			margin-top: 10px;
-		}
-		.put-down {
-			height: 20px;
-			text-align: center;
-			padding-top: 10px;
-		}
-		.put-down span {
-			background-color: rgba(0,0,0,.7);
-		}
-		.put-up span, .put-down span {
-			vertical-align: top;
-			display: inline-block;
-			width: 35px;
-			height: 7px;
-			border-radius: 7px;
-		}
+            width: 80%;
+            height: 280px;
+            background-color: rgba(255,255,255,.7);
+            padding: 0 10%;
+            -webkit-transition: all .5s ease-out;
+            -webkit-transform: translate3d(0,300px,0);
+        }
+        .control.show {
+        	-webkit-transition-timing-function: cubic-bezier(.54,1.63,0,.87);
+        	-webkit-transform: translate3d(0,100px,0);
+        }
+        .control.hide {
+        	-webkit-transition-timing-function: ease-out;
+        	-webkit-transform: translate3d(0,300px,0);
+        }
+        .range {
+            margin: 0 auto;
+        }
+        .range label {
+            display: inline-block;
+            width: 20%;
+            vertical-align: top;
+            height: 40px;
+            line-height: 40px;
+        }
+        .range input {
+            margin: 0;
+            width: 80%;
+            height: 40px;
+        }
+        .image {
+        	text-align: center;
+        }
+        .image .btn {
+        	margin-top: 5px;
+        	width: 45%;
+        	display: inline-block;
+        }
+        button.btn {
+        	border: 0;
+        	outline: 0;
+        	width: 100%;
+        	-webkit-appearance: none;
+        }
+        .btn {
+        	display: block;
+        	background-color: #04be02;
+        	color: white;
+        	border-radius: 5px;
+        	-webkit-border-radius: 5px;
+        	height: 38px;
+        	line-height: 38px;
+        	text-align: center;
+        	box-sizing: border-box;
+        	-webkit-box-sizing: border-box;
+        	margin: 0 auto;
+        	padding: 0 14px;
+        	font-size: 15px;
+        }
+        .add {
+        	position: absolute;
+        	top: 50%;
+        	left: 50%;
+        	width: 80px;
+        	height: 80px;
+        	margin: -40px 0 0 -40px;
+        }
+        .add label {
+        	display: block;
+        	border: 1px solid rgba(255,255,255,.5);
+        	border-radius: 100%;
+        	-webkit-border-radius: 100%;
+        	font-size: 50px;
+        	color: rgba(255,255,255,.5);
+        	text-align: center;
+        	height: 80px;
+        	line-height: 80px;
+        }
+        .put-up {
+        	position: fixed;
+        	bottom: 0;
+        	left: 0;
+        	width: 100%;
+        	height: 30px;
+        	text-align: center;
+        }
+        .put-up span {
+        	background-color: rgba(255,255,255,.8);
+        	margin-top: 10px;
+        }
+        .put-down {
+        	height: 20px;
+        	text-align: center;
+        	padding-top: 10px;
+        }
+        .put-down span {
+        	background-color: rgba(0,0,0,.7);
+        }
+        .put-up span, .put-down span {
+        	vertical-align: top;
+        	display: inline-block;
+        	width: 35px;
+        	height: 7px;
+        	border-radius: 7px;
+        }
         .action {
             position: fixed;
             top: 0;
@@ -192,12 +193,12 @@
         .action i.redo {
             right: 0;
         }
-		</style>
+        </style>
 
-		<script type="text/javascript">
-		    //避免上下滚屏
-		    document.addEventListener("touchmove",function(e){ e.preventDefault(); });
-		</script>
+        <script type="text/javascript">
+            //避免上下滚屏
+            document.addEventListener("touchmove",function(e){ e.preventDefault(); });
+        </script>
 </head>
 <body>
     <p id="console" style="position: fixed; top: 0; left: 0; width: 100%; height: 30px; color: white;"></p>
@@ -250,15 +251,15 @@
         var maxWidth = image.width = window.innerWidth * .9 | 0;
         
         var RAF = (function(){
-        	return 	window.requestAnimationFrame		||
-        			window.webkitRequestAnimationFrame	||
-        			window.mozRequestAnimationFrame		||
-        			window.oRequestAnimationFrame		||
-        			window.msRequestAnimationFrame		||
-        			function( callback ){
-        				var id = window.setTimeout( callback, 1000/60 );
-        				return id;
-        			}
+            return 	window.requestAnimationFrame		||
+                    window.webkitRequestAnimationFrame	||
+                    window.mozRequestAnimationFrame		||
+                    window.oRequestAnimationFrame		||
+                    window.msRequestAnimationFrame		||
+                    function( callback ){
+                    	var id = window.setTimeout( callback, 1000/60 );
+                    	return id;
+                    }
         })();
 
         var createObjectURL = window.createObjectURL 
@@ -384,6 +385,10 @@
         function hidePanic(){
         	dom.ctrl.classList.remove('show');
         	show(dom.putUp);
+
+            document.querySelector('.main-filter').removeChild(tmpFilterNode);
+            // dom.mainOuter.parentNode.style.webkitTransitionDuration = '0s';
+            dom.mainOuter.parentNode.style.height = '100%';
         }
 
         function onFileChange(e){
@@ -518,17 +523,11 @@
 
             tmpFilterNode = document.querySelector('.main-filter').appendChild(dom.mainOuter.cloneNode(true));
 
-            dom.mainOuter.parentNode.style.webkitTransitionDuration = '.5s';
+            // dom.mainOuter.parentNode.style.webkitTransitionDuration = '.5s';
             dom.mainOuter.parentNode.style.height = (window.innerHeight - 180) + 'px';
         });
 
-        dom.putDown.addEventListener('touchstart', function(){
-            hidePanic();
-
-            document.querySelector('.main-filter').removeChild(tmpFilterNode);
-            dom.mainOuter.parentNode.style.webkitTransitionDuration = '0s';
-            dom.mainOuter.parentNode.style.height = '100%';
-        });
+        dom.putDown.addEventListener('touchstart', hidePanic);
         
         dom.addFile.addEventListener('change', onFileChange);
 

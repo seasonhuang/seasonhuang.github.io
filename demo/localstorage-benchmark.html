@@ -1,0 +1,41 @@
+<!DOTYPE html>
+<html>
+<head>
+	<title>localStorage 性能测试</title>
+</head>
+<body>
+
+<p>塞入<input id="input" type="tel" value="5000">个 <button onclick="setItem();">OK</button></p>
+<p>实际塞入<span id="num"></span></p>
+
+<button onclick="getRandom()">随机取一项</button>
+<p>耗时<span id="time"></span></p>
+
+<script type="text/javascript">
+
+function setItem(){
+	var n = document.getElementById('input').value;
+	var i = 1;
+	try {
+		while (i++<n) {
+			localStorage.setItem('key'+i, 'value');
+		}
+	} catch (e) {}
+
+	document.getElementById('num').innerText = --i;
+}
+
+function getRandom(){
+	var n = document.getElementById('input').value;
+	var r = Math.random() * n;
+	var i = r | 0;
+
+	var t = Date.now();
+	localStorage.getItem('key'+i);
+
+	document.getElementById('time').innerText = Date.now() - t;
+}
+	
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 <!DOTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
 	<title>localStorage 性能测试</title>
 </head>
 <body>
@@ -9,7 +10,7 @@
 <p>实际塞入<span id="num"></span></p>
 
 <button onclick="getRandom()">随机取一项</button>
-<p>耗时<span id="time"></span></p>
+<button onclick="getSize()">获取总大小</button>
 
 <script type="text/javascript">
 
@@ -33,7 +34,21 @@ function getRandom(){
 	var t = Date.now();
 	localStorage.getItem('key'+i);
 
-	document.getElementById('time').innerText = Date.now() - t;
+	alert('耗时'+(Date.now() - t))
+}
+
+function getSize(){
+	var l = localStorage.length;
+	var i = 0, key, val;
+	var length = 0;
+
+	while (i++ < l) {
+		key = localStorage.key(i);
+		val = localStorage.getItem(key);
+		if (key && val) length += key.length + val.length;
+	}
+
+	alert(length + ' Bytes');
 }
 	
 </script>

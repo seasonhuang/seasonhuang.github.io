@@ -1,4 +1,8 @@
 <h1>Welcome to my github blog!</h1>
 <script type="text/javascript">
-	alert(window.navigator.userAgent)
+	if (localStorage.getItem('test')) {
+		alert( localStorage.getItem('test') );
+	} else {
+		localStorage.setItem('test', 'test');
+	}
 </script>

@@ -7,10 +7,45 @@
     	padding: 0;
     	margin: 0;
     }
+    video {
+    	    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+    top: 0;
+    }
+    .wrp_loading {
+    	    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 8;
+    }
+    .svg_loader {
+    	position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    }
     </style>
 </head>
 <body>
-<video webkit-playsinline controls preload="none" src="http://ugclx.video.gtimg.com/flv/246/98/f0160jpao83.m701.mp4?vkey=50ED1B20EC17EE28C560D87CFF751D63E97DE360F43DEA8D2C20002FF1E9CFF8940BBAF1BA8F4FC176E3F25E60A0DC5D54752EAF6CDCF01646B9D2160F10375837F40CF99251E91E7F2D062255E37C502EACEFBF25893DBE" style="width:100%;">
-</video>
+<div style="width:345px;height:259px;">
+	<div class="wrp_loading" id="js_loading">         <svg version="1.1" class="svg_loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="60px" height="60px" viewBox="0 0 60 60" enable-background="new 0 0 60 60" xml:space="preserve">            <circle cx="30" cy="30" r="26" style="fill:#a5a4a2;stroke:#a5a4a2;stroke-width:4;fill-opacity:0"></circle>           <path fill="#fff" stroke="#fff" stroke-width="4" fill-opacity="0" d="M4.5 35A 26 26, 0,0,0, 27 56" style="stroke-linecap:round;" transform="rotate(318.613 30 30)">           <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="0.5s" repeatCount="indefinite"></animateTransform>           </path>          </svg>     </div>
+	<video webkit-playsinline preload="metadata" src="http://ugclx.video.gtimg.com/flv/246/98/f0160jpao83.m701.mp4?vkey=8A95E261F8CF2690611F51BABC51A7947062C8091F79CE216600CAE2903220960274AF3EB48ECC5E367A290A7DB1D548A743D3D112BF878F52C10D9896FFC1DC386AD5C13460176FDACF14E956BBE40D97D2DD358CFC82C9" style="width:100%;" poster="http://shp.qpic.cn/qqvideo/0/f0160jpao83/400">
+	</video>
+</div>
+<script type="text/javascript">
+	var video = document.querySelector('video');
+	var loader = document.querySelector('#js_loading');
+	document.querySelector('svg').addEventListener('touchend', function function_name (argument) {
+		loader.style.display = 'none';
+		video.play();
+	})
+</script>
 </body>
 </html>

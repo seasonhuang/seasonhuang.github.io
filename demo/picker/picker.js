@@ -431,7 +431,7 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 }
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
-    console.log(velocity.y);
+    console.log(this._position, velocity.y);
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();

@@ -377,6 +377,8 @@ Scroll.prototype.x = function(t) {
         else this._springOffset = 0;
         x = this._spring.x() + this._springOffset;
     }
+
+    console.log('scroll x', x, t);
     return x;
 }
 Scroll.prototype.dx = function(t) {
@@ -435,7 +437,6 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();
-        console.log('animation', self._position, pos);
         self._position = pos;
         // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
         // since they're also slow at repaints.

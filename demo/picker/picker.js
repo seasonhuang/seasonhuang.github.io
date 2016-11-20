@@ -445,7 +445,7 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
     console.log('onTouchEnd', dy, velocity.y)
-    if (Math.abs(dy) < 34) {
+    if (Math.abs(velocity.y) < 150) {
       self.snap();
       return;
     }
@@ -491,7 +491,7 @@ ScrollHandler.prototype.snap = function() {
   var left = this._position % 34;
   var next = Math.abs(left) > 17 ? this._position - (34 - Math.abs(left)) : this._position - left;
   console.log(this._position, next);
-  this._element.style.transition = 'transform .15s ease-out';
+  this._element.style.transition = 'transform .2s ease-out';
   this._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';
   this._position = next;
   this._snapping = true;

@@ -19,13 +19,17 @@ limitations under the License.
 // This function sets up a requestAnimationFrame-based timer which calls
 // the callback every frame while the physics model is still moving.
 // It returns a function that may be called to cancel the animation.
-function animation(physicsModel, callback) {
+function animation(physicsModel, callback, doneFn) {
     
-    function onFrame(handle, model, cb) {
+    function onFrame(handle, model, cb, doneFn) {
         if (handle && handle.cancelled) return;
         cb(model);
-        if (!physicsModel.done() && !handle.cancelled) {
-            handle.id = requestAnimationFrame(onFrame.bind(null, handle, model, cb));
+        var done = physicsModel.done();
+        if (!done && !handle.cancelled) {
+            handle.id = requestAnimationFrame(onFrame.bind(null, handle, model, cb, doneFn));
+        }
+        if (done && doneFn) {
+          doneFn(model);
         }
     }
     function cancel(handle) {
@@ -36,7 +40,7 @@ function animation(physicsModel, callback) {
     }
 
     var handle = { id: 0, cancelled: false };
-    onFrame(handle, physicsModel, callback);
+    onFrame(handle, physicsModel, callback, doneFn);
 
     return { cancel: cancel.bind(null, handle), model: physicsModel };
 }
@@ -340,6 +344,12 @@ function Scroll(extent) {
     this._springing = false;
     this._springOffset = 0;
 }
+Scroll.prototype.snap = function(x0, x1) {
+  this._springOffset = 0;
+  this._springing = true;
+  this._spring.snap(x0);
+  this._spring.setEnd(x1);
+}
 Scroll.prototype.set = function(x, v) {
     this._friction.set(x, v);
 
@@ -378,7 +388,6 @@ Scroll.prototype.x = function(t) {
         x = this._spring.x() + this._springOffset;
     }
 
-    console.log('scroll x', x, t);
     return x;
 }
 Scroll.prototype.dx = function(t) {
@@ -433,7 +442,6 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 }
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
-    console.log('onTouchEnd', this._position, velocity.y);
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();
@@ -443,6 +451,20 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
         var transform = 'translateY(' + pos + 'px) translateZ(0)';
         self._element.style.webkitTransform = transform;
         self._element.style.transform = transform;
+    }, function done() {
+      var left = self._position % 34;
+      var next = Math.abs(left) > 17 ? self._position - (34 - Math.abs(left)) : self._position - left;
+      console.log(self._position, next);
+      self._scroll.snap(self._position, next);
+      self._animation = animation(self._scroll, function() {
+          var pos = self._scroll.x();
+          self._position = pos;
+          // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
+          // since they're also slow at repaints.
+          var transform = 'translateY(' + pos + 'px) translateZ(0)';
+          self._element.style.webkitTransform = transform;
+          self._element.style.transform = transform;
+      });
     });
 }
 ScrollHandler.prototype.configuration = function() {
@@ -637,13 +659,13 @@ window.addTouchOrMouseListener = addTouchOrMouseListener;
   var data = [[],[],[]];
 
   for (var i = 1990; i <= 2016; i++) {
-    data[0].push(i);
+    data[0].push(i + '年');
   }
   for (var i = 1; i <= 12; i++) {
-    data[1].push(i);
+    data[1].push(i + '月');
   }
   for (var i = 1; i <= 31; i++) {
-    data[2].push(i);
+    data[2].push(i + '日');
   }
 
   var picker = document.getElementById('picker')

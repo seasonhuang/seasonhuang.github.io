@@ -445,7 +445,7 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
     console.log('onTouchEnd', dy, velocity.y)
     if (Math.abs(dy) < 34 && Math.abs(velocity.y) < 300 || Math.abs(velocity.y) < 150) {
-      self.snap();
+      self.snap(20);
       return;
     }
     this._scroll.set(this._position, velocity.y);
@@ -486,9 +486,9 @@ ScrollHandler.prototype.onTransitionEnd = function() {
   this._element.removeEventListener('transitionend', this._onTransitionEnd);
   console.log('transitionEnd');
 }
-ScrollHandler.prototype.snap = function() {
+ScrollHandler.prototype.snap = function(init) {
   var left = this._position % 34;
-  var next = Math.abs(left) > 17 ? this._position - (34 - Math.abs(left)) : this._position - left;
+  var next = Math.abs(left) > (init || 17) ? this._position - (34 - Math.abs(left)) : this._position - left;
   console.log('snap', this._position, next);
   this._element.style.transition = 'transform .2s ease-out';
   this._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';

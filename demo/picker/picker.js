@@ -384,15 +384,15 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
     this._scroll.set(this._position, velocity.y);
-    this._animation = animation(this._scroll, function() {
-        var pos = self._scroll.x();
-        self._position = pos;
-        // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
-        // since they're also slow at repaints.
-        var transform = 'translateY(' + pos + 'px) translateZ(0)';
-        self._element.style.webkitTransform = transform;
-        self._element.style.transform = transform;
-    });
+    // this._animation = animation(this._scroll, function() {
+    //     var pos = self._scroll.x();
+    //     self._position = pos;
+    //     // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
+    //     // since they're also slow at repaints.
+    //     var transform = 'translateY(' + pos + 'px) translateZ(0)';
+    //     self._element.style.webkitTransform = transform;
+    //     self._element.style.transform = transform;
+    // });
 }
 ScrollHandler.prototype.configuration = function() {
     return this._scroll.configuration();

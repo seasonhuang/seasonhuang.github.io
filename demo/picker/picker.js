@@ -445,7 +445,7 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
     console.log('onTouchEnd', dy, velocity.y)
-    if (Math.abs(velocity.y) < 150) {
+    if (Math.abs(dy) < 34 && Math.abs(velocity.y) < 300 || Math.abs(velocity.y) < 150) {
       self.snap();
       return;
     }

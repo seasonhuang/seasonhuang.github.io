@@ -78,12 +78,26 @@ Friction.prototype.set = function(x, v) {
     this._startTime = (new Date()).getTime();
 }
 Friction.prototype.x = function(dt) {
-    if (dt == undefined) dt = ((new Date()).getTime() - this._startTime) / 1000;
-    return this._x + this._v * Math.pow(this._drag, dt) / this._dragLog - this._v / this._dragLog;
+    if (dt === undefined) dt = ((new Date()).getTime() - this._startTime) / 1000;
+    var powDragDt;
+    if (dt === this._dt && this._powDragDt) {
+      powDragDt = this._powDragDt;
+    } else {
+      powDragDt = this._powDragDt = Math.pow(this._drag, dt);
+    }
+    this._dt = dt;
+    return this._x + this._v * powDragDt / this._dragLog - this._v / this._dragLog;
 }
-Friction.prototype.dx = function() {
-    var dt = ((new Date()).getTime() - this._startTime) / 1000;
-    return this._v * Math.pow(this._drag, dt);
+Friction.prototype.dx = function(dt) {
+    if (dt === undefined) dt = ((new Date()).getTime() - this._startTime) / 1000;
+    var powDragDt;
+    if (dt === this._dt && this._powDragDt) {
+      powDragDt = this._powDragDt;
+    } else {
+      powDragDt = this._powDragDt = Math.pow(this._drag, dt);
+    }
+    this._dt = dt;
+    return this._v * powDragDt;
 }
 Friction.prototype.done = function() {
     return Math.abs(this.dx()) < 1;
@@ -384,15 +398,15 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
     this._scroll.set(this._position, velocity.y);
-    // this._animation = animation(this._scroll, function() {
-    //     var pos = self._scroll.x();
-    //     self._position = pos;
-    //     // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
-    //     // since they're also slow at repaints.
-    //     var transform = 'translateY(' + pos + 'px) translateZ(0)';
-    //     self._element.style.webkitTransform = transform;
-    //     self._element.style.transform = transform;
-    // });
+    this._animation = animation(this._scroll, function() {
+        var pos = self._scroll.x();
+        self._position = pos;
+        // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
+        // since they're also slow at repaints.
+        var transform = 'translateY(' + pos + 'px) translateZ(0)';
+        self._element.style.webkitTransform = transform;
+        self._element.style.transform = transform;
+    });
 }
 ScrollHandler.prototype.configuration = function() {
     return this._scroll.configuration();

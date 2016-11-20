@@ -1,0 +1,56 @@
+<!DOTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+	<title>localStorage 性能测试</title>
+</head>
+<body>
+
+<p>塞入<input id="input" type="tel" value="5000">个 <button onclick="setItem();">OK</button></p>
+<p>实际塞入<span id="num"></span></p>
+
+<button onclick="getRandom()">随机取一项</button>
+<button onclick="getSize()">获取总大小</button>
+
+<script type="text/javascript">
+
+function setItem(){
+	var n = document.getElementById('input').value;
+	var i = 1;
+	try {
+		while (i++<n) {
+			localStorage.setItem('key'+i, 'value');
+		}
+	} catch (e) {}
+
+	document.getElementById('num').innerText = --i;
+}
+
+function getRandom(){
+	var n = document.getElementById('input').value;
+	var r = Math.random() * n;
+	var i = r | 0;
+
+	var t = Date.now();
+	localStorage.getItem('key'+i);
+
+	alert('耗时'+(Date.now() - t))
+}
+
+function getSize(){
+	var l = localStorage.length;
+	var i = 0, key, val;
+	var length = 0;
+
+	while (i++ < l) {
+		key = localStorage.key(i);
+		val = localStorage.getItem(key);
+		if (key && val) length += key.length + val.length;
+	}
+
+	alert(length + ' Bytes');
+}
+	
+</script>
+</body>
+</html>

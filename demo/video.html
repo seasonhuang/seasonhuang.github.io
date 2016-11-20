@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+    <link href="//vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
+	<script src="//vjs.zencdn.net/4.12/video.js"></script>
+</head>
+<body>
+<div style="width:345px;height:259px;position:relative;">
+	<video webkit-playsinline preload="metadata" poster="http://shp.qpic.cn/qqvideo/0/f0160jpao83/400" style="width:100%;">
+		<source src="http://ugcws.video.gtimg.com/flv/164/200/u0161lcub5p.mp4?vkey=EFB4CFA3282EC92CDCCC3246BEF872D665E733AAD3C8D3463E89F28BE625A18C07D2C65039A4595E1F5398C2BCECB9DF248033BEE60EE87859BE3212FE4AF477AD0BFA0751572F71428889A036F4ED0F0883660A69EAEE49" type="video/mp4"/>
+	</video>
+</div>
+<p id="play">播放</p>
+<script type="text/javascript">
+	// videojs('video',{
+	// 	width : '100%'
+	// })
+	var video = document.querySelector('video');
+	var loader = document.querySelector('#js_loading');
+	document.querySelector('#play').addEventListener('touchend', function function_name (argument) {
+		//video.load();
+		video.play();
+	})
+</script>
+</body>
+</html>

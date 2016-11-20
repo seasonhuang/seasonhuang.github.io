@@ -28,7 +28,7 @@ li{ line-height: 30px; }
     -webkit-transform: translateZ(0);
     
     border: 1px gray dashed; margin: 0 30px;
-    height: 200px;
+    height: 400px;
 
 }
 .container {
@@ -36,7 +36,7 @@ li{ line-height: 30px; }
     -webkit-transform: translateY(40px);*/
 }
 .content {
-    min-height: 200px;
+    min-height: 400px;
     padding-top: 1px;
 }
 .pull-to-refresh {
@@ -138,6 +138,12 @@ var ul        = document.getElementsByTagName('ul').item(0);
 
 var timer = null;
 
+ul.addEventListener('scroll', function(e) {
+    if (wrap.scrollTop <= 0 ) {
+        wrap.style.webkitOverflowScrolling = ''
+    }
+})
+
 ul.addEventListener('touchmove', function(evt){
     if( wrap.scrollTop < 0 ){
         if( wrap.scrollTop < -40 ){
@@ -147,6 +153,7 @@ ul.addEventListener('touchmove', function(evt){
             tips.innerText = 'pull to refresh';
         }
     }
+    evt.stopPropagation()
 });
 
 ul.addEventListener('touchend', function(evt){
@@ -158,6 +165,7 @@ ul.addEventListener('touchend', function(evt){
             container.style.webkitTransform = '';
         }, 2000 );
     }
+    evt.stopPropagation()
 });
     </script>
     <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>

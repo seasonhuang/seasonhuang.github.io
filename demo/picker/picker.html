@@ -16,11 +16,20 @@
       text-align: center;
       pointer-events: none;
     }
+    .column {
+      will-change: transform;
+    }
   </style>
+  <link rel="stylesheet" type="text/css" href="./picker.css">
 </head>
 <body style="background: black; overflow: hidden;">
-  <div style="margin-top: 100px; width: 100%; height: 400px; overflow: hidden; background: white;">
-    <div id="col1" class="column" style="will-change: transform;">
+  <div id="picker" class="weui-picker__bd" style="margin-top: 100px; width: 100%; height: 400px; overflow: hidden; background: white;">
+    <div class="weui-picker__group">
+      <div class="weui-picker__mask"></div>
+      <div class="weui-picker__indicator"></div>
+      <div class="weui-picker__content"></div>
+    </div>
+    <div id="col1" class="column">
       <p style="background-color: blue;">1</p>
       <p style="background-color: green;">1</p>
       <p style="background-color: red;">1</p>
@@ -89,7 +98,7 @@
       <p style="background-color: gray;">1</p>
     </div>
   </div>
-  <script type="text/javascript" src="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/vconsole/2.5.1/vconsole.min.js"></script>
-  <script type="text/javascript" src="./picker.js?t=4"></script>
+  <!-- <script type="text/javascript" src="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/vconsole/2.5.1/vconsole.min.js"></script> -->
+  <script type="text/javascript" src="./picker.js?t=5"></script>
 </body>
 </html>

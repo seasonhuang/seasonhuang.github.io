@@ -1,0 +1,115 @@
+.weui-picker__bd {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    position: relative;
+    background-color: #fff;
+    height: 238px;
+    overflow: hidden;
+}
+
+.weui-picker__group {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    position: relative;
+    height: 100%;
+}
+
+.weui-picker__mask {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+.weui-picker__indicator, .weui-picker__mask {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+}
+.weui-picker__mask {
+    top: 0;
+    height: 100%;
+    margin: 0 auto;
+    background: -webkit-linear-gradient(top,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6)),-webkit-linear-gradient(bottom,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6));
+    background: linear-gradient(180deg,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6)),linear-gradient(0deg,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6));
+    background-position: top,bottom;
+    background-size: 100% 102px;
+    background-repeat: no-repeat;
+}
+
+.weui-picker__indicator {
+    height: 34px;
+    top: 102px;
+}
+.weui-picker__indicator, .weui-picker__mask {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.weui-picker__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.weui-picker__item {
+    padding: 5px 0 4px;
+    text-align: center;
+    color: #000;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.weui-picker__indicator:after, .weui-picker__indicator:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    color: #e5e5e5;
+}
+.weui-picker__indicator:before {
+    top: 0;
+    border-top: 1px solid #e5e5e5;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+}
+
+.weui-picker__indicator:after {
+    bottom: 0;
+    border-bottom: 1px solid #e5e5e5;
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+}
+.weui-picker__indicator:after, .weui-picker__indicator:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    color: #e5e5e5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

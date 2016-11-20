@@ -629,7 +629,83 @@ window.addTouchOrMouseListener = addTouchOrMouseListener;
 
 
 (function() {
-  var col1 = document.getElementById('col1');
-  var handler = new ScrollHandler(col1);
-  addTouchOrMouseListener(col1, handler);
+  // var col1 = document.getElementById('col1');
+  // var handler = new ScrollHandler(col1);
+  // addTouchOrMouseListener(col1, handler);
+
+
+  var data = [[],[],[]];
+
+  for (var i = 1990; i <= 2016; i++) {
+    data[0].push(i);
+  }
+  for (var i = 1; i <= 12; i++) {
+    data[1].push(i);
+  }
+  for (var i = 1; i <= 31; i++) {
+    data[2].push(i);
+  }
+
+  var picker = document.getElementById('picker')
+  picker.innerHTML = '';
+  var height = (picker.offsetHeight - 34) / 2;
+  var colEl = [];
+
+  data.forEach(function(col, idx) {
+    var div = document.createElement('div')
+    div.className = 'weui-picker__group';
+
+    var mask = document.createElement('div')
+    mask.className = 'weui-picker__mask';
+    mask.style.backgroundSize = '100% ' + height + 'px';
+    div.appendChild(mask);
+
+    var indicator = document.createElement('div');
+    indicator.className = 'weui-picker__indicator'
+    indicator.style.top = height + 'px'
+    div.appendChild(indicator);
+
+    var content = document.createElement('div');
+    content.className = 'weui-picker__content';
+    content.style.padding = height + 'px 0';
+    div.appendChild(content);
+
+    col.forEach(function(item) {
+      var div = document.createElement('div')
+      div.className = 'weui-picker__item';
+      div.innerText = item;
+      content.appendChild(div);
+      colEl.push(content);
+    });
+
+    picker.appendChild(div);
+  })
+
+  colEl.forEach(function(el) {
+    addTouchOrMouseListener(el, new ScrollHandler(el, height))
+  })
+
+
+
+
+
+
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

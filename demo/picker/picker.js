@@ -411,7 +411,7 @@ function ScrollHandler(element) {
     this._position = 0;
     this._extent = this._element.offsetHeight - this._element.parentElement.offsetHeight;
     this._scroll = new Scroll(this._extent);
-    this._element.addEventListener('transitionend', this.onTransitionEnd.bind(this));
+    this._onTransitionEnd = this.onTransitionEnd.bind(this);
 }
 ScrollHandler.prototype.onTouchStart = function() {
     this._startPosition = this._position;
@@ -444,6 +444,10 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
     console.log('onTouchEnd', dy, velocity.y)
+    if (velocity.y === 0) {
+      self.snap();
+      return;
+    }
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();
@@ -454,13 +458,15 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
         self._element.style.webkitTransform = transform;
         self._element.style.transform = transform;
     }, function done() {
-      var left = self._position % 34;
-      var next = Math.abs(left) > 17 ? self._position - (34 - Math.abs(left)) : self._position - left;
-      console.log(self._position, next);
-      self._element.style.transition = 'transform .2s ease-out';
-      self._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';
-      self._position = next;
-      self._snapping = true;
+      self.snap();
+      // var left = self._position % 34;
+      // var next = Math.abs(left) > 17 ? self._position - (34 - Math.abs(left)) : self._position - left;
+      // console.log(self._position, next);
+      // self._element.style.transition = 'transform .2s ease-out';
+      // self._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';
+      // self._position = next;
+      // self._snapping = true;
+      // self._element.addEventListener('transitionend', this._onTransitionEnd);
 
       // self._scroll.snap(self._position, next);
       // self._animation = animation(self._scroll, function() {
@@ -477,7 +483,18 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
 ScrollHandler.prototype.onTransitionEnd = function() {
   this._snapping = false;
   this._element.style.transition = '';
+  this._element.removeEventListener('transitionend', this._onTransitionEnd);
   console.log('transitionEnd');
+}
+ScrollHandler.prototype.snap = function() {
+  var left = this._position % 34;
+  var next = Math.abs(left) > 17 ? this._position - (34 - Math.abs(left)) : this._position - left;
+  console.log(this._position, next);
+  this._element.style.transition = 'transform .2s ease-out';
+  this._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';
+  this._position = next;
+  this._snapping = true;
+  this._element.addEventListener('transitionend', this._onTransitionEnd);
 }
 ScrollHandler.prototype.configuration = function() {
     return this._scroll.configuration();

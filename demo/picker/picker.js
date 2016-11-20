@@ -411,7 +411,7 @@ function ScrollHandler(element) {
     this._position = 0;
     this._extent = this._element.offsetHeight - this._element.parentElement.offsetHeight;
     this._scroll = new Scroll(this._extent);
-    this._element.addEventListener('transitionend', self.onTransitionEnd.bind(this));
+    this._element.addEventListener('transitionend', this.onTransitionEnd.bind(this));
 }
 ScrollHandler.prototype.onTouchStart = function() {
     this._startPosition = this._position;
@@ -476,6 +476,7 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
 }
 ScrollHandler.prototype.onTransitionEnd = function() {
   this._snapping = false;
+  this._element.style.transition = '';
   console.log('transitionEnd');
 }
 ScrollHandler.prototype.configuration = function() {

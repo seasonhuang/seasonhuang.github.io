@@ -411,6 +411,7 @@ function ScrollHandler(element) {
     this._position = 0;
     this._extent = this._element.offsetHeight - this._element.parentElement.offsetHeight;
     this._scroll = new Scroll(this._extent);
+    this._element.addEventListener('transitionend', self.onTransitionEnd.bind(this));
 }
 ScrollHandler.prototype.onTouchStart = function() {
     this._startPosition = this._position;
@@ -442,6 +443,7 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 }
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
+    console.log('onTouchEnd', dy, velocity.y)
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();
@@ -455,17 +457,26 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
       var left = self._position % 34;
       var next = Math.abs(left) > 17 ? self._position - (34 - Math.abs(left)) : self._position - left;
       console.log(self._position, next);
-      self._scroll.snap(self._position, next);
-      self._animation = animation(self._scroll, function() {
-          var pos = self._scroll.x();
-          self._position = pos;
-          // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
-          // since they're also slow at repaints.
-          var transform = 'translateY(' + pos + 'px) translateZ(0)';
-          self._element.style.webkitTransform = transform;
-          self._element.style.transform = transform;
-      });
+      self._element.style.transition = 'transform .2s ease-out';
+      self._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';
+      self._position = next;
+      self._snapping = true;
+
+      // self._scroll.snap(self._position, next);
+      // self._animation = animation(self._scroll, function() {
+      //     var pos = self._scroll.x();
+      //     self._position = pos;
+      //     // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
+      //     // since they're also slow at repaints.
+      //     var transform = 'translateY(' + pos + 'px) translateZ(0)';
+      //     self._element.style.webkitTransform = transform;
+      //     self._element.style.transform = transform;
+      // });
     });
+}
+ScrollHandler.prototype.onTransitionEnd = function() {
+  this._snapping = false;
+  console.log('transitionEnd');
 }
 ScrollHandler.prototype.configuration = function() {
     return this._scroll.configuration();

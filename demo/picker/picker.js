@@ -284,10 +284,10 @@ Spring.prototype.setEnd = function(x, velocity, t) {
 Spring.prototype.snap = function(x) {
     this._startTime = (new Date()).getTime();
     this._endPosition = x;
-    // this._solution = {
-    //     x: function() { return 0; },
-    //     dx: function() { return 0; }
-    // };
+    this._solution = {
+        x: function() { return 0; },
+        dx: function() { return 0; }
+    };
 }
 Spring.prototype.done = function(t) {
     if (!t) t = (new Date()).getTime();

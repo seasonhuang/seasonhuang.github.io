@@ -190,10 +190,6 @@ Spring.prototype._solve = function(initial, velocity) {
         var c1 = initial - c2;
 
         return {
-          _x: 0,
-          _dx: 0,
-          _hitx: 0,
-          _hitdx: 0,
           x: function(t) {
             var powER1T, powER2T;
             if (t === this._t) {
@@ -435,6 +431,7 @@ ScrollHandler.prototype.onTouchMove = function(dx, dy) {
 }
 ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     var self = this;
+    console.log(velocity.y);
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();
@@ -597,6 +594,7 @@ function registerGlobalListener() {
     document.body.addEventListener('touchstart', touchStart, false);
     document.body.addEventListener('touchmove', touchMove, false);
     document.body.addEventListener('touchend', touchEnd, false);
+    document.body.addEventListener('touchcancel', touchEnd, false);
     document.body.addEventListener('mousedown', touchStart, false);
     document.body.addEventListener('mousemove', touchMove, false);
     document.body.addEventListener('mouseup', touchEnd, false);

@@ -291,7 +291,6 @@ Spring.prototype.snap = function(x) {
 }
 Spring.prototype.done = function(t) {
     if (!t) t = (new Date()).getTime();
-    console.log('spring', this.x(), this.dx(), this._endPosition, epsilon)
     return almostEqual(this.x(), this._endPosition, epsilon);// && almostZero(this.dx(), epsilon);
 }
 Spring.prototype.reconfigure = function(mass, springConstant, damping) {
@@ -490,7 +489,7 @@ ScrollHandler.prototype.onTransitionEnd = function() {
 ScrollHandler.prototype.snap = function() {
   var left = this._position % 34;
   var next = Math.abs(left) > 17 ? this._position - (34 - Math.abs(left)) : this._position - left;
-  console.log(this._position, next);
+  console.log('snap', this._position, next);
   this._element.style.transition = 'transform .2s ease-out';
   this._element.style.transform = 'translateY(' + next + 'px) translateZ(0)';
   this._position = next;

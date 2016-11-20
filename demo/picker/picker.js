@@ -104,7 +104,7 @@ Friction.prototype.dx = function(dt) {
     return this._v * powDragDt;
 }
 Friction.prototype.done = function() {
-    return Math.abs(this.dx()) < 1;
+    return Math.abs(this.dx()) < 3;
 }
 Friction.prototype.reconfigure = function(drag) {
     var x = this.x();
@@ -145,7 +145,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var epsilon = 0.001;
+var epsilon = 0.1;
 function almostEqual(a, b, epsilon) { return (a > (b - epsilon)) && (a < (b + epsilon)); }
 function almostZero(a, epsilon) { return almostEqual(a, 0, epsilon); }
 
@@ -291,7 +291,8 @@ Spring.prototype.snap = function(x) {
 }
 Spring.prototype.done = function(t) {
     if (!t) t = (new Date()).getTime();
-    return almostEqual(this.x(), this._endPosition, epsilon) && almostZero(this.dx(), epsilon);
+    console.log('spring', this.x(), this.dx(), this._endPosition, epsilon)
+    return almostEqual(this.x(), this._endPosition, epsilon);// && almostZero(this.dx(), epsilon);
 }
 Spring.prototype.reconfigure = function(mass, springConstant, damping) {
     this._m = mass;
@@ -379,6 +380,7 @@ Scroll.prototype.x = function(t) {
     // We're still in friction.
     var x = this._friction.x(t);
     var dx = this.dx(t);
+    console.log('scroll x', x, dx);
     // If we've gone over the edge the roll the momentum into the spring.
     if ((x > 0 && dx >= 0) || (x < -this._extent && dx <= 0)) {
         this._springing = true;

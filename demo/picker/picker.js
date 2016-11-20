@@ -435,6 +435,9 @@ ScrollHandler.prototype.onTouchEnd = function(dx, dy, velocity) {
     this._scroll.set(this._position, velocity.y);
     this._animation = animation(this._scroll, function() {
         var pos = self._scroll.x();
+        if (Math.abs(self._position - pos) > 100) {
+          console.log(self._position, pos);
+        }
         self._position = pos;
         // The translateZ is to help older WebKits not collapse this layer into a non-composited layer
         // since they're also slow at repaints.

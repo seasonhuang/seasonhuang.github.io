@@ -291,7 +291,7 @@ Spring.prototype.snap = function(x) {
 }
 Spring.prototype.done = function(t) {
     if (!t) t = (new Date()).getTime();
-    return almostEqual(this.x(), this._endPosition, epsilon);// && almostZero(this.dx(), epsilon);
+    return almostEqual(this.x(), this._endPosition, epsilon) && almostZero(this.dx(), epsilon);
 }
 Spring.prototype.reconfigure = function(mass, springConstant, damping) {
     this._m = mass;

@@ -190,9 +190,47 @@ Spring.prototype._solve = function(initial, velocity) {
         var c1 = initial - c2;
 
         return {
-            x: function(t) { return (c1 * Math.pow(Math.E, r1 * t) + c2 * Math.pow(Math.E, r2 * t)); },
-            dx: function(t) { return (c1 * r1 * Math.pow(Math.E, r1 * t) + c2 * r2 * Math.pow(Math.E, r2 * t)); }
-            };
+          _x: 0,
+          _dx: 0,
+          _hitx: 0,
+          _hitdx: 0,
+          x: function(t) {
+            var powER1T, powER2T;
+            if (t === this._t) {
+              powER1T = this._powER1T;
+              powER2T = this._powER2T;
+            }
+
+            this._t = t;
+
+            if (!powER1T) {
+              powER1T = this._powER1T = Math.pow(Math.E, r1 * t);
+            }
+            if (!powER2T) {
+              powER2T = this._powER2T = Math.pow(Math.E, r2 * t);
+            }
+
+            return (c1 * powER1T + c2 * powER2T);
+          },
+          dx: function(t) {
+            var powER1T, powER2T;
+            if (t === this._t) {
+              powER1T = this._powER1T;
+              powER2T = this._powER2T;
+            }
+
+            this._t = t;
+
+            if (!powER1T) {
+              powER1T = this._powER1T = Math.pow(Math.E, r1 * t);
+            }
+            if (!powER2T) {
+              powER2T = this._powER2T = Math.pow(Math.E, r2 * t);
+            }
+
+            return (c1 * r1 * powER1T + c2 * r2 * powER2T);
+          }
+        };
     } else {
         // The spring is underdamped, it has imaginary roots.
         // r = -(c / 2*m) +- w*i
@@ -246,10 +284,10 @@ Spring.prototype.setEnd = function(x, velocity, t) {
 Spring.prototype.snap = function(x) {
     this._startTime = (new Date()).getTime();
     this._endPosition = x;
-    this._solution = {
-        x: function() { return 0; },
-        dx: function() { return 0; }
-    };
+    // this._solution = {
+    //     x: function() { return 0; },
+    //     dx: function() { return 0; }
+    // };
 }
 Spring.prototype.done = function(t) {
     if (!t) t = (new Date()).getTime();

@@ -1,3 +1,15 @@
+html {
+  -webkit-user-select: none;
+          user-select: none;
+  height: 100%;
+  width: 100%;
+}
+body {
+  -webkit-user-select: none;
+          user-select: none;
+  width: 100%;
+  overflow-x: hidden;
+}
 .weui-picker__bd {
     display: -webkit-box;
     display: -webkit-flex;

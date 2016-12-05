@@ -9,6 +9,7 @@ body {
           user-select: none;
   width: 100%;
   overflow-x: hidden;
+  font-size: 15px;
 }
 .weui-picker__bd {
     display: -webkit-box;

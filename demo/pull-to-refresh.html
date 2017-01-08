@@ -36,7 +36,7 @@ li{ line-height: 30px; }
     -webkit-transform: translateY(40px);*/
 }
 .content {
-    min-height: 400px;
+    /*min-height: 400px;*/
     padding-top: 1px;
 }
 .pull-to-refresh {
@@ -65,8 +65,8 @@ li{ line-height: 30px; }
         <div class="pull-to-refresh">
             pull to refresh.
         </div>
-        <ul class="content">
-            <li>item 0</li>
+        <ul class="content" style="height: auto;">
+            <li style="transform: translateZ(0px);">item 0</li>
             <li>item 1</li>
             <li>item 2</li>
             <li>item 3</li>
@@ -167,6 +167,10 @@ ul.addEventListener('touchend', function(evt){
     }
     evt.stopPropagation()
 });
+
+setTimeout(function() {
+    document.querySelector('.content').style.height = '400px';
+}, 1000)
     </script>
     <script type="text/javascript" src="http://tajs.qq.com/stats?sId=43095907" charset="UTF-8"></script>
 </body>

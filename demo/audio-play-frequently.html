@@ -52,7 +52,7 @@ function run(cb) {
   });
   
   document.getElementById('play').addEventListener('touchend', function() {
-    cb(function() {
+    run(function() {
       console.log('touchend requestAnimationFrame')
       audio.currentTime = 0
       audio.play()

@@ -41,7 +41,7 @@ var audio = new Audio()
 
 function run(cb) {
   cb()
-  requestAnimationFrame(fn.bind(null, cb))
+  requestAnimationFrame(run.bind(null, cb))
 }
 
   document.getElementById('play').addEventListener('touchstart', function() {

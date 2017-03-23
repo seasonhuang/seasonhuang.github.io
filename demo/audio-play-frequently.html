@@ -44,12 +44,14 @@ var audio = new Audio()
     audio.play()
     audio.pause()
 
+  });
+  
+  document.getElementById('play').addEventListener('touchend', function() {
     setInterval(function() {
       audio.currentTime = 0
       audio.play()
     }, 100)
   });
-
 </script>
   </body>
 </html>

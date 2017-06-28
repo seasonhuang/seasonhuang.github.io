@@ -27,6 +27,14 @@
       document.getElementById('black').addEventListener('touchend', function(e) {
         e.preventDefault();
       });
+      window.addEventListener('touchend', function(e) {
+        e.preventDefault();
+      }, location.search.indexOf('capture=1') > -1);
+    }
+    if (location.search.indexOf('body=1') > -1) {
+      document.body.addEventListener('touchend', function(e) {
+        e.preventDefault();
+      }, location.search.indexOf('capture=1') > -1);
     }
   </script>
 </body>

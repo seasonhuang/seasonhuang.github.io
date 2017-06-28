@@ -29,12 +29,12 @@
       });
       window.addEventListener('touchend', function(e) {
         e.preventDefault();
-      }, location.search.indexOf('capture=1') > -1);
+      }, {capture: location.search.indexOf('capture=1') > -1, passive: false});
     }
     if (location.search.indexOf('body=1') > -1) {
       document.body.addEventListener('touchend', function(e) {
         e.preventDefault();
-      }, location.search.indexOf('capture=1') > -1);
+      }, {capture: location.search.indexOf('capture=1') > -1, passive: false});
     }
   </script>
 </body>

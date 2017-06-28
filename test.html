@@ -5,7 +5,7 @@
   <title></title>
 </head>
 <body>
-  <div style="position: fixed; width: 100px; height: 200px; z-index: 99999; background: black; top: 0;">
+  <div id="black" style="position: fixed; width: 100px; height: 200px; z-index: 99999; background: black; top: 0;">
   </div>
   <div style="overflow-y: scroll; -webkit-overflow-scrolling: touch; height: 400px; background-color: green; margin-top: 100px; opacity: .5; border: 10px solid black;">
     <div style="height: 1838px; background-color: red;position:relative;">
@@ -21,5 +21,11 @@
   </div>
   <div style="transform: translateX(1px)"></div>
   <input type="text"/>
+  
+  <script type="text/javascript">
+    if (location.search.indexOf('black=1') > -1) {
+      document.getElementById('black').addEventListener('touchend', function(e) { e.preventDefault(); });
+    }
+  </script>
 </body>
 </html>

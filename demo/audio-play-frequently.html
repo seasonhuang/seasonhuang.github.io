@@ -58,6 +58,14 @@ function run(cb) {
       audio.play()
     })
   });
+  document.body.addEventListener('click', function() {
+    WeixinJSBridge.invoke('invokeMiniProgramAPI', {
+      name: 'navigateBack',
+      arg: {}
+    }, function (res) {
+      console.log(res)
+    })  
+  });
 </script>
     <script type="text/javascript" src="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/vconsole/2.5.1/vconsole.min.js"></script>
   </body>

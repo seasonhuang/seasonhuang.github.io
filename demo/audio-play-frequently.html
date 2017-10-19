@@ -64,7 +64,7 @@ function run(cb) {
     console.log('invokeMiniProgramAPI navigateTo')
     WeixinJSBridge.invoke('invokeMiniProgramAPI', {
       name: 'navigateTo',
-      arg: { url: 'page/component/index' }
+      arg: { url: '/page/component/index' }
     }, function (res) {
       console.log(res)
     })

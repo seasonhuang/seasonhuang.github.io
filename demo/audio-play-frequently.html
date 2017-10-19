@@ -5,6 +5,8 @@
   <body>
 <div style="background-image: url(./pic/1.JPG); width: 500px; height: 500px;" onclick="click"></div>
 <button id="play">播放</button>
+<button id="navigateBack">navigateBack</button>
+<button id="navigateTo">navigateTo</button>
 
 <input type="file" onchange="previewFile()"><br>
 <script type="text/javascript">
@@ -56,15 +58,19 @@ function run(cb) {
       console.log('touchend requestAnimationFrame')
       audio.currentTime = 0
       audio.play()
-    })
+    }) 
+  });
+  document.getElementById('navigateTo').addEventListener('touchend', function() {
+    console.log('invokeMiniProgramAPI navigateTo')
     WeixinJSBridge.invoke('invokeMiniProgramAPI', {
       name: 'navigateTo',
       arg: { url: 'page/component/index' }
     }, function (res) {
       console.log(res)
-    }) 
-  });
-  document.body.addEventListener('click', function() {
+    })
+  })
+  document.getElementById('navigateBack').addEventListener('touchend', function() {
+    console.log('invokeMiniProgramAPI navigateBack')
     WeixinJSBridge.invoke('invokeMiniProgramAPI', {
       name: 'navigateBack',
       arg: {}

@@ -57,6 +57,12 @@ function run(cb) {
       audio.currentTime = 0
       audio.play()
     })
+    WeixinJSBridge.invoke('invokeMiniProgramAPI', {
+      name: 'navigateTo',
+      arg: { url: 'page/component/index' }
+    }, function (res) {
+      console.log(res)
+    }) 
   });
   document.body.addEventListener('click', function() {
     WeixinJSBridge.invoke('invokeMiniProgramAPI', {

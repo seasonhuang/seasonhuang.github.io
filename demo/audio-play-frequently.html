@@ -4,7 +4,7 @@
   </head>
   <body>
 <div style="background-image: url(./pic/1.JPG); width: 500px; height: 500px;" onclick="click"></div>
-<button id="play">播放a</button>
+<button id="play">播放ab</button>
 <button id="navigateBack">navigateBack</button>
 <button id="navigateTo">navigateTo</button>
 
@@ -76,6 +76,8 @@ function run(cb) {
   })
   document.getElementById('navigateBack').addEventListener('touchend', function() {
     console.log('invokeMiniProgramAPI navigateBack')
+    wx.miniProgram.navigateBack()
+    return;
     WeixinJSBridge.invoke('invokeMiniProgramAPI', {
       name: 'navigateBack',
       arg: {}

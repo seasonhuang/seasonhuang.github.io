@@ -5,6 +5,7 @@
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.2.js?t=3"></script>
   </head>
   <body>
+    <div>a</div>
     <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
     <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
     <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
@@ -19,25 +20,37 @@
       document.getElementById('navigateTo').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI navigateTo')
         wx.miniProgram.navigateTo({
-          url: '/page/component/pages/map/map'
+          url: '/page/component/pages/map/map',
+          complete: function(res) {
+            console.log('complete res')
+          }
         })
       });
       document.getElementById('switchTab').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI switchTab')
         wx.miniProgram.switchTab({
-          url: '/page/API/index'
+          url: '/page/API/index',
+          complete: function(res) {
+            console.log('complete res')
+          }
         })
       });
       document.getElementById('reLaunch').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI reLaunch')
         wx.miniProgram.reLaunch({
-          url: '/page/component/pages/map/map'
+          url: '/page/component/pages/map/map',
+          complete: function(res) {
+            console.log('complete res')
+          }
         })
       });
       document.getElementById('redirectTo').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI redirectTo')
         wx.miniProgram.redirectTo({
-          url: '/page/component/pages/map/map'
+          url: '/page/component/pages/map/map',
+          complete: function(res) {
+            console.log('complete res')
+          }
         })
       });
     </script>

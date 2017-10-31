@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.2.js?t=3"></script>
+  </head>
+  <body>
+    <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
+    <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
+    <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
+    <button class="weui-btn weui-btn_primary" id="reLaunch">reLaunch</button>
+    <button class="weui-btn weui-btn_primary" id="redirectTo">redirectTo</button>
+
+    <script type="text/javascript">
+      document.getElementById('navigateBack').addEventListener('touchend', function() {
+        console.log('invokeMiniProgramAPI navigateBack')
+        wx.miniProgram.navigateBack()
+      });
+      document.getElementById('navigateTo').addEventListener('touchend', function() {
+        console.log('invokeMiniProgramAPI navigateTo')
+        wx.miniProgram.navigateTo({
+          url: '/page/component/pages/map/map'
+        })
+      });
+      document.getElementById('switchTab').addEventListener('touchend', function() {
+        console.log('invokeMiniProgramAPI switchTab')
+        wx.miniProgram.switchTab({
+          url: '/page/API/index'
+        })
+      });
+      document.getElementById('reLaunch').addEventListener('touchend', function() {
+        console.log('invokeMiniProgramAPI reLaunch')
+        wx.miniProgram.reLaunch({
+          url: '/page/component/pages/map/map'
+        })
+      });
+      document.getElementById('redirectTo').addEventListener('touchend', function() {
+        console.log('invokeMiniProgramAPI redirectTo')
+        wx.miniProgram.redirectTo({
+          url: '/page/component/pages/map/map'
+        })
+      });
+    </script>
+  </body>
+</html>

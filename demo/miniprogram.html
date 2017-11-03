@@ -5,19 +5,23 @@
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.2.js?t=4"></script>
   </head>
   <body>
-    <div>abcd</div>
+    <div>abcde</div>
     <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
     <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
     <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
     <button class="weui-btn weui-btn_primary" id="reLaunch">reLaunch</button>
     <button class="weui-btn weui-btn_primary" id="redirectTo">redirectTo</button>
     <input type="text" value="/page/component/pages/map/map" style="width: 100%;border: 1px solid gray;height: 44px;" />
-    <iframe src="https://www.ptt.cc/bbs/ukulele/M.1335203608.A.EE8.html"></iframe>
+    <input type="file" name="">
+    <iframe src="https://www.baidu.com"></iframe>
     <!-- <img src="./boast/fu.png"> -->
 
     <script type="text/javascript">
       window.onload = function() {
         document.querySelector('input').value = localStorage.getItem('path') || '/page/component/pages/map/map'
+        setTimeout(function() {
+          document.querySelector('iframe').setAttribute('src', 'https://www.ptt.cc/bbs/ukulele/M.1335203608.A.EE8.html')
+        }, 3000)
       }
       document.querySelector('input').addEventListener('input', function() {
         var val = document.querySelector('input').value

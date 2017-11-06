@@ -17,20 +17,21 @@
     <br>
     <a href="https://www.taobao.com/">taobao</a>
     <br>
+    <button class="weui-btn weui-btn_primary" id="iframeRedirect">iframe 跳转</button>
     <iframe src="https://www.baidu.com"></iframe>
     <!-- <img src="./boast/fu.png"> -->
 
     <script type="text/javascript">
       window.onload = function() {
         document.querySelector('input').value = localStorage.getItem('path') || '/page/component/pages/map/map'
-        setTimeout(function() {
-          document.querySelector('iframe').setAttribute('src', 'https://www.taobao.com/')
-        }, 3000)
       }
       document.querySelector('input').addEventListener('input', function() {
         var val = document.querySelector('input').value
         localStorage.setItem('path', val)
       })
+      document.getElementById('iframeRedirect').addEventListener('touchend', function() {
+        document.querySelector('iframe').setAttribute('src', 'https://www.taobao.com/')
+      });
       document.getElementById('navigateBack').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI navigateBack')
         wx.miniProgram.navigateBack()

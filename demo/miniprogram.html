@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.0.js?t=4"></script>
   </head>
   <body>
-    <div>abcdefghijk</div>
+    <div>abcdefghijkl</div>
     <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
     <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
     <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
@@ -14,6 +14,10 @@
     <input type="text" value="/page/component/pages/map/map" style="width: 100%;border: 1px solid gray;height: 44px;" />
     <br>
     <button class="weui-btn weui-btn_primary" id="logLocation">location.href</button>
+    <br>
+    <button class="weui-btn weui-btn_primary" id="changeHash">change hash</button>
+    <button class="weui-btn weui-btn_primary" id="pushState">push state</button>
+    <br>
     <input type="file" name="">
     <br>
     <a href="https://www.taobao.com/">taobao</a>
@@ -84,6 +88,12 @@
       window.onhashchange = function() {
         console.log('hashchange', location.hash)
       }
+      document.getElementById('changeHash').addEventListener('touchend', function() {
+        location.hash = location.hash.replace('#', '') === 'a' ? 'b' : 'a'
+      })
+      document.getElementById('pushState').addEventListener('touchend', function() {
+        history.pushState(null, '', 'https://seasonhuang.github.io/')
+      })
     </script>
     <script type="text/javascript" src="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/vconsole/2.5.1/vconsole.min.js"></script>
   </body>

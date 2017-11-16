@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style type="text/css">
+    body, ul, ol, h1, h2, h3, h6, p, em, strong, i, sub, sup, img, textarea, input { margin: 0; padding: 0; }
+    body{ -webkit-touch-callout: none; -webkit-user-select: none; }
+    html, body { height: 100%; width: 100%; }
+    body { align-items: center; justify-content: center; display: flex; }
+    canvas { width: 300px; height: 300px; }
+  </style>
+</head>
+<body>
+  <canvas></canvas>
+  <script type="text/javascript">
+    var cvs = document.querySelector('canvas')
+    cvs.width = 300
+    cvs.height = 300
+    var ctx = cvs.getContext('2d')
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, 300, 300)
+
+    ctx.strokeStyle = 'white'
+    ctx.fillStyle = 'white'
+
+    // ctx.moveTo(10, 10)
+    // ctx.lineTo(10, 30)
+    // ctx.lineTo(40, 30)
+    // ctx.closePath()
+    // ctx.stroke()
+    // // ctx.fill()
+
+    // ctx.beginPath()
+    // ctx.lineTo(10, 100)
+    // ctx.lineTo(100, 30)
+    // ctx.stroke()
+
+
+    ctx.beginPath()
+    ctx.rect(100, 10, 50, 10)
+    ctx.stroke()
+    ctx.lineTo(100, 50)
+    ctx.lineTo(150, 50)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.strokeRect(100, 100, 50, 10) // 不会进subpath？
+    // ctx.rect(100, 100, 50, 0) // subpath (100, 100)
+    // ctx.stroke()
+    ctx.lineTo(100, 150)
+    ctx.lineTo(150, 150)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.arc(200, 200, 50, 0, Math.PI * 3, false)
+    ctx.stroke()
+    ctx.lineTo(300, 300)
+    ctx.stroke()
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -85,11 +85,11 @@
       });
       document.getElementById('postMessage').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI postMessage')
-        WeixinJSBridge.invoke('invokeMiniProgramAPI', {
-          name: 'postMessage',
-          arg: {foo: 'bar', timeStamp: Date.now()}
-        }, function(res) {
-          console.log(res)
+        wx.miniProgram.postMessage({
+          data: {foo: 'bar', timeStamp: Date.now()}
+          complete: function(res) {
+            console.log(res)
+          }
         })
       })
       document.getElementById('logLocation').addEventListener('touchend', function() {

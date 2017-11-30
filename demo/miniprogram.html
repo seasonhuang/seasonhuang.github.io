@@ -86,7 +86,7 @@
       document.getElementById('postMessage').addEventListener('touchend', function() {
         console.log('invokeMiniProgramAPI postMessage')
         wx.miniProgram.postMessage({
-          data: {foo: 'bar', timeStamp: Date.now()}
+          data: {foo: 'bar', timeStamp: Date.now()},
           complete: function(res) {
             console.log(res)
           }

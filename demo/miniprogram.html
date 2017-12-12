@@ -33,6 +33,9 @@
     <img style="width: 90%;" src="./weapp.jpg">
     <!-- <img src="./boast/fu.png"> -->
 
+    <button class="weui-btn weui-btn_primary" id="chooseImage">chooseImage</button>
+    <img id="chooseImageResult" src="">
+
     <script type="text/javascript">
       window.onload = function() {
         document.querySelector('input').value = localStorage.getItem('path') || '/page/component/pages/map/map'
@@ -41,14 +44,14 @@
         var val = document.querySelector('input').value
         localStorage.setItem('path', val)
       })
-      document.getElementById('iframeRedirect').addEventListener('touchend', function() {
+      document.getElementById('iframeRedirect').addEventListener('click', function() {
         document.querySelector('iframe').setAttribute('src', 'https://www.taobao.com/')
       });
-      document.getElementById('navigateBack').addEventListener('touchend', function() {
+      document.getElementById('navigateBack').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI navigateBack')
         wx.miniProgram.navigateBack()
       });
-      document.getElementById('navigateTo').addEventListener('touchend', function() {
+      document.getElementById('navigateTo').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI navigateTo')
         wx.miniProgram.navigateTo({
           url: document.querySelector('input').value,
@@ -57,7 +60,7 @@
           }
         })
       });
-      document.getElementById('switchTab').addEventListener('touchend', function() {
+      document.getElementById('switchTab').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI switchTab')
         wx.miniProgram.switchTab({
           url: document.querySelector('input').value,
@@ -66,7 +69,7 @@
           }
         })
       });
-      document.getElementById('reLaunch').addEventListener('touchend', function() {
+      document.getElementById('reLaunch').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI reLaunch')
         wx.miniProgram.reLaunch({
           url: document.querySelector('input').value,
@@ -75,7 +78,7 @@
           }
         })
       });
-      document.getElementById('redirectTo').addEventListener('touchend', function() {
+      document.getElementById('redirectTo').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI redirectTo')
         wx.miniProgram.redirectTo({
           url: document.querySelector('input').value,
@@ -84,7 +87,7 @@
           }
         })
       });
-      document.getElementById('postMessage').addEventListener('touchend', function() {
+      document.getElementById('postMessage').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI postMessage')
         wx.miniProgram.postMessage({
           data: {foo: 'bar', timeStamp: Date.now()},
@@ -93,24 +96,33 @@
           }
         })
       })
-      document.getElementById('getEnv').addEventListener('touchend', function() {
+      document.getElementById('getEnv').addEventListener('click', function() {
         console.log('invokeMiniProgramAPI getEnv')
         wx.miniProgram.getEnv(function(res) {
           console.log(res)
         })
       })
-      document.getElementById('logLocation').addEventListener('touchend', function() {
+      document.getElementById('logLocation').addEventListener('click', function() {
         console.log(location.href)
       })
       window.onhashchange = function() {
         console.log('hashchange', location.hash)
       }
-      document.getElementById('changeHash').addEventListener('touchend', function() {
+      document.getElementById('changeHash').addEventListener('click', function() {
         location.hash = location.hash.replace('#', '') === 'a' ? 'b' : 'a'
       })
-      document.getElementById('pushState').addEventListener('touchend', function() {
+      document.getElementById('pushState').addEventListener('click', function() {
         history.pushState(null, '', 'http://seasonhuang.github.io/')
       })
+
+  document.querySelector('#chooseImage').onclick = function () {
+    wx.chooseImage({
+      success: function (res) {
+        alert('已选择 ' + res.localIds.length + ' 张图片');
+        document.querySelector('#chooseImageResult').setAttribute('src', res.localIds[0])
+      }
+    });
+  };
     </script>
     <script type="text/javascript" src="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/vconsole/2.5.1/vconsole.min.js"></script>
   </body>

@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.1.js?t=4"></script>
   </head>
   <body>
-    <div>abcdefghijklmnop</div>
+    <div>abcdefghijklmnopq</div>
     <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
     <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
     <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
@@ -40,11 +40,9 @@
       window.onload = function() {
         document.querySelector('input').value = localStorage.getItem('path') || '/page/component/pages/map/map'
       }
-      document.querySelector('input').addEventListener('keypress', function(e) {
+      document.querySelector('input').onkeypress = function() {
         console.log('keypress', e)
-        var val = document.querySelector('input').value
-        localStorage.setItem('path', val)
-      })
+      }
       document.querySelector('input').addEventListener('input', function(e) {
         console.log('input', e)
         var val = document.querySelector('input').value

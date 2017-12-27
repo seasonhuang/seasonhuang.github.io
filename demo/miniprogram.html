@@ -41,7 +41,7 @@
         document.querySelector('input').value = localStorage.getItem('path') || '/page/component/pages/map/map'
       }
       document.querySelector('input').addEventListener('input', function(e) {
-        console.log('input', e.keyCode)
+        console.log('input', e)
         var val = document.querySelector('input').value
         localStorage.setItem('path', val)
       })

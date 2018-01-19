@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.1.js?t=4"></script>
   </head>
   <body>
-    <div>abcdefghijklmnopq</div>
+    <div>abcdefghijklmnopqr</div>
     <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
     <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
     <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
@@ -37,6 +37,9 @@
     <img id="chooseImageResult" src="">
 
     <script type="text/javascript">
+      if (location.href.indexOf('redirect=1') {
+        wx.miniProgram.navigateTo({url: '/components/video/video'})
+      }
       window.onload = function() {
         document.querySelector('input').value = localStorage.getItem('path') || '/page/component/pages/map/map'
       }

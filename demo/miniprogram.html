@@ -2,10 +2,10 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
-    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.1.js?t=4"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js?t=4"></script>
   </head>
   <body>
-    <div>abcdefghijklmnopqrs</div>
+    <div>abcdefghijklmnopqrstu</div>
     <button class="weui-btn weui-btn_primary" id="navigateBack">navigateBack</button>
     <button class="weui-btn weui-btn_primary" id="navigateTo">navigateTo</button>
     <button class="weui-btn weui-btn_primary" id="switchTab">switchTab</button>
@@ -38,7 +38,7 @@
     <img id="chooseImageResult" src="">
 
     <script type="text/javascript">
-      if (location.href.indexOf('redirect=1') {
+      if (location.href.indexOf('redirect=1') > -1) {
         wx.miniProgram.navigateTo({url: '/components/video/video'})
       }
       window.onload = function() {

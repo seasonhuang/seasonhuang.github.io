@@ -6,11 +6,23 @@
   <style type="text/css">
     body {
       user-select: none;
+      -webkit-user-select: none;
+    }
+    wx-text {
+      display: block;
+      margin: 20px;
+    }
+    wx-text[selectable] {
+      user-select: text;
+      -webkit-user-select: none;
     }
   </style>
 </head>
 <body>
-  <p style="user-select: text;">可选</p>
+  <wx-text selectable>
+    <span style="display: none;">可选</span>
+    <span>可选</span>
+  </wx-text>
   <p>不可选</p>
 </body>
 </html>

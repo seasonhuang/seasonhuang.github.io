@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html style="width: 100%;height: 100%">
+<head>
+     <script src="../../build/player/lottie.js"></script>
+     <script src="data.js"></script>
+</head>
+<body style="background-color:#ccc; margin: 0px;height: 100%;overflow: hidden">
+
+<div style="width:100%;height:100%;background-color:#333;" id="bodymovin">
+    <canvas style="width: 100%; height: 100%;"></canvas>
+</div>
+
+<script>
+
+    var animParams = {
+        // wrapper: document.getElementById('bodymovin'),
+        animType: 'canvas',
+        loop: true,
+        prerender: false,
+        autoplay: true,
+        animationData: animData,
+        rendererSettings: {
+            context: document.querySelector('canvas').getContext('2d'),
+        }
+    };
+    bodymovin.setQuality(500);
+    var anim = bodymovin.loadAnimation(animParams);
+    window.onresize = anim.resize.bind(anim);
+    setTimeout(() => {
+        anim.destroy()
+    }, 3000)
+</script>
+</body>
+</html>

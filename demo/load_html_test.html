@@ -1,14 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"/>
   <style type="text/css">
     body {
-      padding: 20px;
+      padding: 0 15px;
+      font-size: 12px;
+    }
+    p {
+      word-break: break-all;
+    }
+    table, td {
+      border: 1px solid #CCC;
+      border-collapse: collapse;
+    }
+    td:nth-child(2) {
+      width: 100%;
     }
   </style>
+  <script type="text/javascript">
+    window.onerror = function (e) {
+      document.querySelector('#error').innerText = '报错：' + e
+    }
+  </script>
 </head>
 <body>
-<p><strong>set-cookies: </strong>{{setCookies}}</p>
+  <h1>Cookie</h1>
+  <p style="white-space: nowrap;">
+  初次请求：客户端不带 cookie，服务器返回 cookie，包括 httpOnly<br>
+  二次请求：客户端带上 cookie，包含 httpOnly，服务器收到 cookie<br>
+  测试覆盖：<br>
+  1. 先预加载后普通请求<br>
+  2. 先普通请求后预加载<br>
+  </p>
+
+  <p>服务器收到的 cookie:</p>
+  <table>
+    <tbody>
+      {{#each serverRecvCookie}}
+      <tr>
+        <td>{{@key}}</td>
+        <td>{{this}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <p>服务器发出的 cookie:</p>
+  <table>
+    <tbody>
+      {{#each serverSentCookie}}
+      <tr>
+        <td>{{@key}}</td>
+        <td>{{this}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <p>JS 取到的 cookie: <span id="cookie"></span></p>
+
+  <h1>CSP</h1>
+  <p>通过 eval 设置一段文本：<span id="eval"></span></p>
+  <p id="error" style="color: red;"></p>
+
+  <script type="text/javascript">
+    document.querySelector('#cookie').innerText = document.cookie
+    eval(`document.querySelector('#eval').innerText = 'Hello evil world.'`)
+  </script>
 </body>
 </html>

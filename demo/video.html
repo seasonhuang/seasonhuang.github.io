@@ -1,28 +1,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
-    <link href="//vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
-	<script src="//vjs.zencdn.net/4.12/video.js"></script>
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+  <style type="text/css">
+    html, body {
+      height: 100%;
+    }
+    .column {
+      flex: 1;
+    }
+    .text {
+      background-color: black;
+      height: 80px;
+      margin: 10px;
+    }
+    video {
+      width: 90%;
+      margin: 5%;
+      background-color: rgb(0, 0, 0)
+    }
+    .scroll-view {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      overflow: scroll;
+    }
+  </style>
 </head>
 <body>
-<div style="width:345px;height:259px;position:relative;">
-	<video webkit-playsinline preload="metadata" poster="http://shp.qpic.cn/qqvideo/0/f0160jpao83/400" style="width:100%;">
-		<source src="http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400" type="video/mp4"/>
-	</video>
+<div class="scroll-view">
+  <div class="column">
+    <video autoplay webkit-playsinline muted preload="auto" poster="http://shp.qpic.cn/qqvideo/0/f0160jpao83/400" src=""></video>
+    <div class="text"></div>
+  </div>
+  <div class="column">
+    <div class="text"></div>
+  </div>
 </div>
-<p id="play">播放</p>
 <script type="text/javascript">
-	// videojs('video',{
-	// 	width : '100%'
-	// })
-	var video = document.querySelector('video');
-	var loader = document.querySelector('#js_loading');
-	document.querySelector('#play').addEventListener('touchend', function function_name (argument) {
-		//video.load();
-		video.play();
-		prompt('test');
-	})
+  var videoUrls = [
+    'http://html5videoformatconverter.com/data/images/happyfit2.mp4',
+  ]
+  var poster = 'http://shp.qpic.cn/qqvideo/0/f0160jpao83/400'
+  var videoTpl = '<video loop webkit-playsinline preload="auto" poster="__P__" src="__S__" style="height: __H__px;"></video>'
+  var textTpl = '<div class="text" style="height: __H__px; background-color: rgb(__R__, __G__, __B__)"></div>'
+
+  function genCol() {
+    var html = '<div class="column">'
+    var cnt = 50
+    while (cnt --) {
+      var tpl = ''
+      if (Math.random() > .8) {
+        html += videoTpl.replace('__P__', poster)
+          .replace('__S__', videoUrls[Math.random() * videoUrls.length | 0] + '?r=' + Math.random())
+          .replace('__H__', Math.random() * 100 | 0 + 150)
+      } else {
+        html += textTpl.replace('__H__', Math.random() * 150 | 0 + 150)
+          .replace('__R__', Math.random() * 255 | 0)
+          .replace('__G__', Math.random() * 255 | 0)
+          .replace('__B__', Math.random() * 255 | 0)
+      }
+    }
+    html += '</div>'
+    return html
+  }
+
+  function init() {
+    var html = genCol() + genCol()
+    document.querySelector('.scroll-view').innerHTML = html
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        console.log('### IntersectionObserver happened', entry)
+        if (entry.intersectionRatio === 1) {
+          entry.target.play()
+        } else if (entry.intersectionRatio === 0) {
+          entry.target.pause()
+        }
+      })
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: [0.0, 1.0],
+    })
+    Array.from(document.querySelectorAll('video')).forEach(function (elem) {
+      observer.observe(elem)
+    })
+  }
+  init()
+
 </script>
 </body>
 </html>

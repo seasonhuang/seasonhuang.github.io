@@ -5,6 +5,7 @@
   <style type="text/css">
     html, body {
       height: 100%;
+      margin: 0;
     }
     .column {
       flex: 1;
@@ -42,7 +43,7 @@
     'http://html5videoformatconverter.com/data/images/happyfit2.mp4',
   ]
   var poster = 'http://shp.qpic.cn/qqvideo/0/f0160jpao83/400'
-  var videoTpl = '<video loop webkit-playsinline preload="auto" poster="__P__" src="__S__" style="height: __H__px;"></video>'
+  var videoTpl = '<video loop muted webkit-playsinline playsinline controls preload="auto" poster="__P__" src="__S__" style="height: __H__px;"></video>'
   var textTpl = '<div class="text" style="height: __H__px; background-color: rgb(__R__, __G__, __B__)"></div>'
 
   function genCol() {
